@@ -5,28 +5,23 @@ G2 = "\n" * 2
 
 def Scan_Apk(apk_path):
     print(f"\n{C.r}{'_' * 61}\n")
-    App_Name = False; isPairip = False; Package_Name = ''
+    isPairip = False; Package_Name = ''
     
     # Extract Package Name
     if C.os.name == 'posix':
-        result = C.subprocess.run(['aapt', 'dump', 'badging', apk_path], capture_output=True, text=True)
-        pkg_name = C.re.search(r"package: name='([^']+)'", result.stdout)
-        if pkg_name:
-            Package_Name = pkg_name[1]
+        Package_Name = C.subprocess.run(['aapt', 'dump', 'badging', apk_path], capture_output=True, text=True).stdout.split("package: name='")[1].split("'")[0]
+        if Package_Name:
             print(f"\n{C.lb}[ {C.c}Package Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{Package_Name}{C.pr}' {C.g} ✔\n")
 
         # Match Application Name
-        result = C.subprocess.run(['aapt', 'dump', 'xmltree', apk_path, 'AndroidManifest.xml'], capture_output=True, text=True)
-        app_name = C.re.search(r'A: android:name\(.*\)="com\.pairip\.application\.Application"', result.stdout)
-        if app_name:
-            print(f"\n{C.lb}[ {C.c}Application Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}com.pairip.application.Application{C.pr}' {C.g} ✔\n")
-            App_Name = True
+        A_N = '"com.pairip.application.Application"'
+        App_Name = A_N in C.subprocess.run(['aapt', 'dump', 'xmltree', apk_path, 'AndroidManifest.xml'], capture_output=True, text=True).stdout
+        if App_Name:
+            print(f"\n{C.lb}[ {C.c}Application Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{A_N[1:-1]}{C.pr}' {C.g} ✔\n")
 
     #  Extract Package Name with APKEditor
     if not Package_Name:
-        cmd = ["java", "-jar", F.APKEditor_Path, "info", "-package", "-i", apk_path]
-        result = C.subprocess.run(cmd, capture_output=True, text=True)
-        Package_Name = result.stdout.split('"')[1]
+        Package_Name = C.subprocess.run(["java", "-jar", F.APKEditor_Path, "info", "-package", "-i", apk_path], capture_output=True, text=True).stdout.split('"')[1]
         print(f"\n{C.lb}[ {C.c}Package Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{Package_Name}{C.pr}'{C.g}  ✔\n")
 
     # Check for APK protections

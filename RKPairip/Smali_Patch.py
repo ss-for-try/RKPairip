@@ -10,7 +10,7 @@ def Smali_Patch(smali_folders, CoreX_Hook, isCoreX):
 
     if not (isCoreX and not CoreX_Hook):
         patterns.extend([
-            (r'invoke-static \{[^\}]*\}, Lcom/pairip/SignatureCheck;->verifyIntegrity\(Landroid/content/Context;\)V', r'#', "VerifyIntegrity"),
+            (r'invoke-static \{[^\}]+\}, Lcom/pairip/SignatureCheck;->verifyIntegrity\(Landroid/content/Context;\)V', r'#', "VerifyIntegrity"),
             (r'(\.method [^(]*verifyIntegrity\(Landroid/content/Context;\)V\s+.locals \d+)[\s\S]*?(\s+return-void\n.end method)', r'\1\2', "VerifyIntegrity"),
             (r'(\.method [^(]*verifySignatureMatches\(Ljava/lang/String;\)Z\s+.locals \d+\s+)[\s\S]*?(\s+return ([pv]\d+)\n.end method)', r'\1const/4 \3, 0x1\2', "verifySignatureMatches"),
             (r'(\.method [^(]*connectToLicensingService\(\)V\s+.locals \d+)[\s\S]*?(\s+return-void\n.end method)', r'\1\2', "connectToLicensingService"),

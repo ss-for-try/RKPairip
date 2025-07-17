@@ -3,9 +3,9 @@ from .CRC import CRC_Fix
 from .Scan import Scan_Apk
 from .Anti_Splits import Anti_Split
 from .Files_Check import FileCheck
-from .Argparse import ArgumentParser
 from .RK_Pairip import RK_Techno_IND
 from .Flutter_SO import Version, E_V_C
+from .Argparse import parse_arguments
 from .Instruction_Credit import instruction
 from .Extract import Extract_Smali, Logs_Injected
 from .Smali_Patch import Smali_Patch, Check_CoreX, Hook_Core

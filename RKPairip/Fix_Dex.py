@@ -48,7 +48,7 @@ def Delete_Folders(smali_folders, L_S_F):
 
     for smali_folder in smali_folders:
         Pairip_Folder_Path = C.os.path.join(smali_folder, Pairip_Folders)
-        Logs_Smali_Path = C.os.path.join(smali_folder, "RK_TECHNO_INDIA")
+        Logs_Smali_Path = C.os.path.join(L_S_F, "RK_TECHNO_INDIA")
 
         if C.os.path.isdir(Logs_Smali_Path):
             C.shutil.rmtree(Logs_Smali_Path)

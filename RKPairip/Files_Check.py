@@ -41,7 +41,7 @@ class FileCheck:
                 if R.status_code == 200:
                     V = C.re.search(r'version="(.*?)"', R.text)
                     if V:
-                        if V[1] != "3.3":
+                        if V[1] != "3.4":
                             print(f"\n{C.lb}[ {C.y}Update {C.lb}]{C.c} Updating RKPairip to {C.g}{V[1]}...{G2}")
                             cmd = (["pip", "install", "git+https://github.com/TechnoIndian/RKPairip.git"] if C.os.name == "nt" else "curl -Ls https://github.com/TechnoIndian/Tools/releases/download/Tools/RKPairip.sh | bash")
                             C.subprocess.run(cmd, shell=isinstance(cmd, str), check=True)
@@ -77,7 +77,7 @@ class FileCheck:
     def F_D_A(self, isAPKTool, Fix_Dex):
         Jar_Files = []
         if isAPKTool or Fix_Dex:
-            Jar_Files.append(("https://github.com/TechnoIndian/Tools/releases/download/Tools/APKTool.jar", self.APKTool_Path, "56d59c524fc764263ba8d345754d8daf55b1887818b15cd3b594f555d249e2db"))
+            Jar_Files.append(("https://github.com/TechnoIndian/Tools/releases/download/Tools/APKTool.jar", self.APKTool_Path, "effb69dab2f93806cafc0d232f6be32c2551b8d51c67650f575e46c016908fdd"))
         if isAPKTool or Fix_Dex:
             Jar_Files.append(("https://github.com/TechnoIndian/Tools/releases/download/Tools/Axml2Xml.jar", self.Axml2Xml_Path, "e3a09af1255c703fc050e17add898562e463c87bb90c085b4b4e9e56d1b5fa62"))
         if Jar_Files:

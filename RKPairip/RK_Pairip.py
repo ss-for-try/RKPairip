@@ -2,10 +2,10 @@ from .CRC import CRC_Fix
 from .Scan import Scan_Apk
 from .C_M import CM;  C = CM()
 from .Flutter_SO import Version, E_V_C
+from .Argparse import parse_arguments
 from .Instruction_Credit import instruction
 from .Anti_Splits import Anti_Split, Check_Split
 from .Extract import Extract_Smali, Logs_Injected
-from .Argparse import ArgumentParser; AR = ArgumentParser()
 from .Smali_Patch import Smali_Patch, Check_CoreX, Hook_Core
 from .Files_Check import FileCheck; F = FileCheck(); F.Set_Path()
 from .Fix_Dex import Scan_Application, Smali_Patcher, Replace_Strings
@@ -93,7 +93,7 @@ def disable_wake_lock():
 
 # Execute
 def RK_Techno_IND():
-    args = AR.parse_arguments()
+    args = parse_arguments()
     M_Skip=args.MergeSkip
     CoreX_Hook=args.Hook_CoreX; isCoreX=False
     Credit=args.Credits_Instruction; instruction(Credit)
@@ -128,6 +128,7 @@ def RK_Techno_IND():
     L_S_F = L_S_C_F(decompile_dir, isAPKTool, Fix_Dex)
     smali_folders = Find_Smali_Folders(decompile_dir, isAPKTool, Fix_Dex)
 
+    # Fix Dex Flag: -r
     if Fix_Dex:
         try:
             App_Name = Scan_Application(apk_path, manifest_path, d_manifest_path, Fix_Dex)
@@ -159,6 +160,7 @@ def RK_Techno_IND():
         OR_App=f'\n{C.lb}[{C.c}  APPLICATION  {C.lb}] {C.g}︻デ═一 {Super_Value}  ✔{C.r}\n'
         smali_folders = Find_Smali_Folders(decompile_dir, isAPKTool, Fix_Dex)
 
+    # Hook CoreX
     if CoreX_Hook and Check_CoreX(decompile_dir, isAPKTool): C.shutil.rmtree(decompile_dir); exit(0)
     Smali_Patch(smali_folders, CoreX_Hook, isCoreX)
     if CoreX_Hook or isCoreX: Hook_Core(args.input, decompile_dir, isAPKTool, Package_Name)
@@ -197,8 +199,7 @@ def RK_Techno_IND():
     print(OR_App)
     print(START + f'{elapsed_time:.2f}' + END + f"\n{C_Line}\n")
     if C.os.path.exists(mtd_path):
-        all_files = C.os.listdir(mtd_path)
-        mtd_files = [file for file in all_files if file.startswith(Package_Name) and file.endswith('.mtd')]
+        mtd_files = [file for file in C.os.listdir(mtd_path) if file.startswith(Package_Name) and file.endswith('.mtd')]
         for mtd_file in mtd_files:
             C.os.remove(C.os.path.join(mtd_path, mtd_file))
     print(f'\n{C.lb}[ {C.y}INFO {C.lb}] {C.g} If U Want Repair Dex Without Translate, So Generate .mtd First & put the .mtd in the path of {C.y}"/sdcard/MT2/dictionary/"{C.g}, if .mtd available in target path then The Script will handle Automatically, So Press Enter 🤗🤗\n')
@@ -229,8 +230,7 @@ def RK_Techno_IND():
                 mtd_files = None
                 while True:
                     if C.os.path.exists(mtd_path):
-                        all_files = C.os.listdir(mtd_path)
-                        mtd_files = [file for file in all_files if file.startswith(Package_Name) and file.endswith('.mtd')]
+                        mtd_files = [file for file in C.os.listdir(mtd_path) if file.startswith(Package_Name) and file.endswith('.mtd')]
                         if not mtd_files: print(f"{G2}{C.lb}[{C.y} Warn ! {C.lb}] {C.rd} No {C.g}{Package_Name}..... .mtd {C.g}file found in {C.y}{mtd_path}\n")
                         else:
                             UnMerge()
@@ -245,8 +245,7 @@ def RK_Techno_IND():
                 if mtd_files:
                     fix_time = C.time.time()
                     Smali_Patcher(smali_folders, L_S_F)
-                    mtd_p = C.os.path.join(mtd_path, mtd_file)
-                    Replace_Strings(L_S_F, mtd_p)
+                    Replace_Strings(L_S_F, C.os.path.join(mtd_path, mtd_file))
                     Merge_Smali_Folders(decompile_dir, isAPKTool, L_S_F)
                     App_Name = Scan_Application(apk_path, manifest_path, d_manifest_path, isAPKTool)
                     print(OR_App)
