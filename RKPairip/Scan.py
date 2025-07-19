@@ -5,24 +5,30 @@ G2 = "\n" * 2
 
 def Scan_Apk(apk_path):
     print(f"\n{C.r}{'_' * 61}\n")
-    isPairip = False; Package_Name = ''
+    isPairip = License_Check = App_Name = False; Package_Name = ''
     
     # Extract Package Name
     if C.os.name == 'posix':
         Package_Name = C.subprocess.run(['aapt', 'dump', 'badging', apk_path], capture_output=True, text=True).stdout.split("package: name='")[1].split("'")[0]
         if Package_Name:
-            print(f"\n{C.lb}[ {C.c}Package Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{Package_Name}{C.pr}' {C.g} ✔\n")
+            print(f"\n{C.lb}[ {C.c}Package Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{Package_Name}{C.pr}' {C.g} ✔")
 
-        # Match Application Name
-        A_N = '"com.pairip.application.Application"'
-        App_Name = A_N in C.subprocess.run(['aapt', 'dump', 'xmltree', apk_path, 'AndroidManifest.xml'], capture_output=True, text=True).stdout
+        # Match Application & License 
+        A_N, L_C = '"com.pairip.application.Application"', '"com.pairip.licensecheck.LicenseActivity"'
+        manifest = C.subprocess.run(['aapt', 'dump', 'xmltree', apk_path, 'AndroidManifest.xml'], capture_output=True, text=True).stdout
+
+        App_Name = A_N in manifest
         if App_Name:
-            print(f"\n{C.lb}[ {C.c}Application Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{A_N[1:-1]}{C.pr}' {C.g} ✔\n")
+            print(f"{G2}{C.lb}[ {C.c}Application Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{A_N[1:-1]}{C.pr}' {C.g} ✔")
+        else:
+            License_Check = L_C in manifest
+            if License_Check:
+                print(f"{G2}{C.lb}[ {C.c}License Check {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{L_C[1:-1]}{C.pr}' {C.g} ✔")
 
     #  Extract Package Name with APKEditor
     if not Package_Name:
         Package_Name = C.subprocess.run(["java", "-jar", F.APKEditor_Path, "info", "-package", "-i", apk_path], capture_output=True, text=True).stdout.split('"')[1]
-        print(f"\n{C.lb}[ {C.c}Package Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{Package_Name}{C.pr}'{C.g}  ✔\n")
+        print(f"\n{C.lb}[ {C.c}Package Name {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{Package_Name}{C.pr}'{C.g}  ✔")
 
     # Check for APK protections
     Detect_Protection = []
@@ -30,11 +36,11 @@ def Scan_Apk(apk_path):
         for item in zip_ref.infolist():
             if item.filename.startswith('lib/'):
                 if item.filename.endswith('libpairipcore.so'):
-                    print(f"\n{C.lb}[ {C.c}Pairip Protection {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}Google加固{C.pr}' {C.g} ✔")
+                    print(f"{G2}{C.lb}[ {C.c}Pairip Protection {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}Google加固{C.pr}' {C.g} ✔")
                     isPairip = True
                     break
         
-    if not App_Name and not isPairip: exit(f"{C.rd} Your APK Has No Pairip Protection ✘\n")
+    if not any([App_Name, isPairip, License_Check]): exit(f"{C.rd} Your APK Has No Pairip Protection ✘\n")
 
     def Check_Lib():
         isUnity, isFlutter, dex_files = [], [], []
@@ -69,4 +75,4 @@ def Scan_Apk(apk_path):
             pass
 
     Check_Lib()
-    return Package_Name
+    return Package_Name, License_Check

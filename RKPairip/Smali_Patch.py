@@ -10,7 +10,7 @@ def Smali_Patch(smali_folders, CoreX_Hook, isCoreX):
 
     if not (isCoreX and not CoreX_Hook):
         patterns.extend([
-            (r'invoke-static \{[^\}]+\}, Lcom/pairip/SignatureCheck;->verifyIntegrity\(Landroid/content/Context;\)V', r'#', "VerifyIntegrity"),
+            (r'invoke-static \{[^\}]*\}, Lcom/pairip/SignatureCheck;->verifyIntegrity\(Landroid/content/Context;\)V', r'#', "VerifyIntegrity"),
             (r'(\.method [^(]*verifyIntegrity\(Landroid/content/Context;\)V\s+.locals \d+)[\s\S]*?(\s+return-void\n.end method)', r'\1\2', "VerifyIntegrity"),
             (r'(\.method [^(]*verifySignatureMatches\(Ljava/lang/String;\)Z\s+.locals \d+\s+)[\s\S]*?(\s+return ([pv]\d+)\n.end method)', r'\1const/4 \3, 0x1\2', "verifySignatureMatches"),
             (r'(\.method [^(]*connectToLicensingService\(\)V\s+.locals \d+)[\s\S]*?(\s+return-void\n.end method)', r'\1\2', "connectToLicensingService"),
@@ -46,7 +46,7 @@ def Smali_Patch(smali_folders, CoreX_Hook, isCoreX):
 
 # Check_CoreX
 def Check_CoreX(decompile_dir, isAPKTool):
-    lib_paths = C.os.path.join(decompile_dir, 'lib' if isAPKTool else f'root{C.os.sep}lib')
+    lib_paths = C.os.path.join(decompile_dir, 'lib' if isAPKTool else 'root', 'lib')
     Lib_CoreX = []
         
     for arch in C.os.listdir(lib_paths):
@@ -76,7 +76,7 @@ def Hook_Core(apk_path, decompile_dir, isAPKTool, package_name):
         print(f'\n{C.lb}[ {C.c}Dump {C.lb}] {C.g}➸❥ {C.rkj}{base_apk}\n')
         Dump_Apk = "libFirebaseCppApp.so"
         C.os.rename(base_apk, Dump_Apk)
-        lib_paths = C.os.path.join(decompile_dir, 'lib' if isAPKTool else f'root{C.os.sep}lib')
+        lib_paths = C.os.path.join(decompile_dir, 'lib' if isAPKTool else 'root', 'lib')
         Arch_Paths = []
         for lib in C.os.listdir(lib_paths):
             for root, _, files in C.os.walk(C.os.path.join(lib_paths, lib)):

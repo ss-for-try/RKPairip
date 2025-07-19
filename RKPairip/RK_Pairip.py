@@ -118,7 +118,7 @@ def RK_Techno_IND():
     START = f'\n{C.lb}[{C.c}  Time Spent  {C.lb}] {C.g}︻デ═一 {C.y}'; END=f'{C.r} Seconds\n'
 
     if C.os.name == 'posix': (C.subprocess.run(['termux-wake-lock']), enable_wake_lock())
-    Package_Name = Scan_Apk(apk_path)
+    Package_Name, License_Check = Scan_Apk(apk_path)
     if input: E_V_C(apk_path, Version())
     start_time = C.time.time()
     
@@ -152,9 +152,9 @@ def RK_Techno_IND():
             exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd}{e} ✘{C.r}\n")
 
     # Extract Target Smali & Logs Inject
-    if not CoreX_Hook: Extract_Smali(decompile_dir, smali_folders, L_S_F, isAPKTool)
+    if not (CoreX_Hook or License_Check): Extract_Smali(decompile_dir, smali_folders, L_S_F, isAPKTool)
     L_S_F = L_S_C_F(decompile_dir, isAPKTool, Fix_Dex)
-    if not CoreX_Hook:
+    if not (CoreX_Hook or License_Check):
         Logs_Injected(L_S_F)
         Super_Value = Application_Name(L_S_F)
         OR_App=f'\n{C.lb}[{C.c}  APPLICATION  {C.lb}] {C.g}︻デ═一 {Super_Value}  ✔{C.r}\n'
@@ -170,7 +170,7 @@ def RK_Techno_IND():
     Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isCoreX)
     if isAPKTool: Encode_Manifest(decompile_dir, manifest_path, d_manifest_path)
     
-    if not CoreX_Hook: 
+    if not (CoreX_Hook or License_Check): 
         # Merge smali
         if M_Skip:
             print(f"\n{C.lb}[ {C.y}INFO ! {C.lb}] {C.g} Skip Merge Last Dex {C.y}{C.os.path.basename(L_S_F)} {C.g} & Add Seprate (For Dex Redivision) {C.r}\n")
@@ -181,7 +181,7 @@ def RK_Techno_IND():
         Translate_Smali = Translate_Smali_Name(C.os.path.basename(L_S_C_F(decompile_dir, isAPKTool, Fix_Dex)), isAPKTool) if L_S_C_F(decompile_dir, isAPKTool, Fix_Dex) else "No Smali classes folder found."
 
     Recompile_Apk(decompile_dir, isAPKTool, build_dir)
-    if CoreX_Hook:
+    if CoreX_Hook or License_Check:
         CRC_Fix(M_Skip, apk_path, build_dir, ["AndroidManifest.xml", ".dex"])
         C.shutil.rmtree(decompile_dir)
         print(f"{C_Line}{G2}" + START + f'{C.time.time() - start_time:.2f}' + END + f'\n{Logo}')

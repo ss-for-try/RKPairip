@@ -41,7 +41,7 @@ class FileCheck:
                 if R.status_code == 200:
                     V = C.re.search(r'version="(.*?)"', R.text)
                     if V:
-                        if V[1] != "3.4":
+                        if V[1] != "3.5":
                             print(f"\n{C.lb}[ {C.y}Update {C.lb}]{C.c} Updating RKPairip to {C.g}{V[1]}...{G2}")
                             cmd = (["pip", "install", "git+https://github.com/TechnoIndian/RKPairip.git"] if C.os.name == "nt" else "curl -Ls https://github.com/TechnoIndian/Tools/releases/download/Tools/RKPairip.sh | bash")
                             C.subprocess.run(cmd, shell=isinstance(cmd, str), check=True)
