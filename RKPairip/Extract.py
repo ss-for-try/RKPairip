@@ -4,7 +4,7 @@ G = "\n" * 3
 def Extract_Smali(decompile_dir, smali_folders, L_S_F, isAPKTool):
     Extract_Dir = C.os.path.join(decompile_dir, 'smali_classes') if isAPKTool else C.os.path.join(decompile_dir, 'smali', 'classes')
 
-    Target_Regex = C.re.compile(r'\.class public L([^;]+);\n\.super Ljava/lang/Object;\s+# static fields\n\.field public static [^:]+:Ljava/lang/String;')
+    Target_Regex = C.re.compile(r'\.class public L([^;]+);\n\.super Ljava/lang/Object;\s+# static fields\n\.field public static [^: ]+:Ljava/lang/String;\n')
 
     App_Smali = C.os.path.join("com", "pairip", "application", "Application.smali")
 
@@ -61,7 +61,7 @@ def Logs_Injected(L_S_F):
             content = open(path, 'r', encoding='utf-8', errors='ignore').read()
 
             Class_Match = C.re.search(r'\.class public L([^;]+);', content)
-            Static_Fields = C.re.findall(r'\.field public static ([^:]+):Ljava/lang/String;', content)
+            Static_Fields = C.re.findall(r'\.field public static ([^: ]+):Ljava/lang/String;\n', content)
 
             if Class_Match and Static_Fields:
                 Class_Names.append(Class_Match[1])
