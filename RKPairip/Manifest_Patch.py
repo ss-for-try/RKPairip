@@ -13,24 +13,23 @@ def Decode_Manifest(manifest_path, d_manifest_path):
             print(f"\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} Decoding Failed  ✘\n")
     except Exception as e:
         print(f"\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} {e} ✘\n")
-        
+
 # Generate ObjectLogger
 def Generate_Objectlogger(decompile_dir, manifest_path, d_manifest_path, L_S_F):
-    dest_dir = C.os.path.join(L_S_F, "RK_TECHNO_INDIA")
-    C.os.makedirs(dest_dir, exist_ok=True)
-    dest = C.os.path.join(dest_dir, "ObjectLogger.smali")
-    C.shutil.copy(F.Objectlogger, dest)
-    print(f"\n{C.lb}[ {C.c}Generate {C.lb}] {C.rkj}➸❥ {C.cb}ObjectLogger.smali {C.c}To {C.y}{C.os.path.basename(L_S_F)}/RK_TECHNO_INDIA/{C.os.path.basename(dest)}{C.g} ✔")
-        
-    content = open(d_manifest_path, 'r', encoding='utf-8', errors='ignore').read()
-    Package_Name = C.re.search(r'package="([^"]+)"', content)
+    
+    Target_Dest = C.os.path.join(L_S_F, 'RK_TECHNO_INDIA', 'ObjectLogger.smali')
+    C.os.makedirs(C.os.path.dirname(Target_Dest), exist_ok=True)
+    C.shutil.copy(F.Objectlogger, Target_Dest)
+    
+    print(f"\n{C.lb}[ {C.c}Generate {C.lb}] {C.g}ObjectLogger.smali {C.rkj}➸❥ {C.y}{C.os.path.relpath(Target_Dest, decompile_dir)}{C.g} ✔")
 
-    if Package_Name:
-        content = open(dest, 'r', encoding='utf-8', errors='ignore').read()
-        updated = content.replace('PACKAGENAME', Package_Name[1])
-        open(dest, 'w', encoding='utf-8', errors='ignore').write(updated)
+    # Update Package Name
+    PKG_Name = C.re.search(r'package="([^"]+)"', open(d_manifest_path, 'r', encoding='utf-8', errors='ignore').read())[1]
+    content = open(Target_Dest, 'r', encoding='utf-8', errors='ignore').read()
+    Update_PKG = content.replace('PACKAGENAME', PKG_Name)
+    open(Target_Dest, 'w', encoding='utf-8', errors='ignore').write(Update_PKG)
 
-        print(f"{C.g}     |\n     └──── {C.r}Package Name ~{C.g}$ {C.rkj}➸❥ {C.pn}'{C.g}{Package_Name[1]}{C.pn}' {C.g}✔\n")
+    print(f"{C.g}     |\n     └──── {C.r}Package Name ~{C.g}$ {C.rkj}➸❥ {C.pn}'{C.g}{PKG_Name[1]}{C.pn}' {C.g}✔\n")
 
 # Fix_Manifest
 def Fix_Manifest(d_manifest_path):

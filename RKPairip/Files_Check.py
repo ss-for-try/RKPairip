@@ -39,9 +39,9 @@ class FileCheck:
             try:
                 R = requests.get("https://raw.githubusercontent.com/TechnoIndian/RKPairip/main/setup.py")
                 if R.status_code == 200:
-                    V = C.re.search(r'version="(.*?)"', R.text)
+                    V = C.re.search(r'version="([^"]+)"', R.text)
                     if V:
-                        if V[1] != "3.5":
+                        if V[1] != "3.6":
                             print(f"\n{C.lb}[ {C.y}Update {C.lb}]{C.c} Updating RKPairip to {C.g}{V[1]}...{G2}")
                             cmd = (["pip", "install", "git+https://github.com/TechnoIndian/RKPairip.git"] if C.os.name == "nt" else "curl -Ls https://github.com/TechnoIndian/Tools/releases/download/Tools/RKPairip.sh | bash")
                             C.subprocess.run(cmd, shell=isinstance(cmd, str), check=True)
@@ -67,7 +67,7 @@ class FileCheck:
 
     def F_D(self):
         Jar_Files = [
-            ("https://github.com/TechnoIndian/Tools/releases/download/Tools/APKEditor.jar", self.APKEditor_Path, "d4280b36fc78ba1f11c04a8a9d91fa8646cf4c41e96fd0addc9afb81b78dcbe9"),
+            ("https://github.com/TechnoIndian/Tools/releases/download/Tools/APKEditor.jar", self.APKEditor_Path, "304170a35c80594cc6a6cb57398c46fdcf75f1ec463b41dea94cb374703d12d1"),
             ("https://raw.githubusercontent.com/TechnoIndian/Objectlogger/main/Objectlogger.smali", self.Objectlogger, "ff31dd1f55d95c595b77888b9606263256f1ed151a5bf5706265e74fc0b46697"),
             ("https://github.com/TechnoIndian/Tools/releases/download/Tools/lib_Pairip_CoreX.so", self.Pairip_CoreX, "22a7954092001e7c87f0cacb7e2efb1772adbf598ecf73190e88d76edf6a7d2a")
         ]

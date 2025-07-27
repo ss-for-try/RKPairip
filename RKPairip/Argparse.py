@@ -15,7 +15,7 @@ class CustomArgumentParser(C.argparse.ArgumentParser):
         exit(f'\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} {message}\n\n{suggestion}')
 
 def parse_arguments():
-    parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v3.4') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v3.4')
+    parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v3.6') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v3.6')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-i', dest='input', help=f'{C.y}➸ {C.g}Input APK Path...{C.c}')
     group.add_argument('-m', dest='Merge', help=f'{C.y}➸ {C.g}Anti-Split ( Only Merge Apk ){C.c}')
@@ -27,18 +27,18 @@ def parse_arguments():
     additional.add_argument('-r', '--Repair_Dex', action='store_true', help=f'{C.y}➸ {C.g}Pairip Dex Fix ( Try After Translate String to MT ){C.c}')
     additional.add_argument('-x', '--Hook_CoreX', action='store_true', help=f'{C.y}➸{C.g} Hook CoreX ( For Unity / Flutter & Crashed Apk Apk ){C.r}')
         
-    args = C.sys.argv[1:]  
-    Ext = ('.apk', '.apks', '.apkm', '.xapk')  
-    fixed = []; start = None; Valid_Ext = False  
+    args = C.sys.argv[1:]
+    Ext = ('.apk', '.apks', '.apkm', '.xapk')
+    fixed = []; start = None; Valid_Ext = False
 
-    for i, a in enumerate(args):  
-        if a in ['-i', '-m', '-C']:  
-            start, fixed = i + 1, fixed + [a]  
-        elif start and (a.endswith(Ext) or C.os.path.isdir(a)):  
-            fixed, start = fixed + [' '.join(args[start:i+1])], None  
-            Valid_Ext = True  
-        elif not start:  
-            fixed.append(a)  
+    for i, a in enumerate(args):
+        if a in ['-i', '-m', '-C']:
+            start, fixed = i + 1, fixed + [a]
+        elif start and (a.endswith(Ext) or C.os.path.isdir(a)):
+            fixed, start = fixed + [' '.join(args[start:i+1])], None
+            Valid_Ext = True
+        elif not start:
+            fixed.append(a)
 
     if not Valid_Ext and C.sys.argv[1:2] != ['-C']:
         print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Only Supported Extensions {C.g}{Ext}\n")
