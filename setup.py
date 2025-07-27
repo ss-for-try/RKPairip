@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="Pairip",
-    version="3.5",
+    version="3.6",
     author="RK_TECHNO_INDIA",
     author_email="TechnoIndia786@gmail.com",
     description="Recover String & Rebuild Apk",
