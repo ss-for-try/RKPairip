@@ -28,7 +28,7 @@ classifiers = [
 ]
 
 [project.scripts]
-RKPairip = "RKPairip.APK_PATCHER:RK_Techno_IND"
+RKPairip = "RKPairip.RK_Pairip:RK_Techno_IND"
 
 [tool.setuptools]
 include-package-data = true
