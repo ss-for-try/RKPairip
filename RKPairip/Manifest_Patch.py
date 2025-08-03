@@ -36,6 +36,7 @@ def Fix_Manifest(d_manifest_path):
 
     patterns = [
         (r'\s+android:(splitTypes|requiredSplitTypes)="[^"]*?"', r'', 'Splits'),
+        (r'(isSplitRequired=)"true"', r'\1"false"', 'isSplitRequired'),
         (r'\s+<meta-data\s+[^>]*"com.android.(vending.|stamp.|dynamic.apk.)[^"]*"[^>]*/>', r'', '<meta-data>'),
         (r'\s+<[^>]*"com.(pairip.licensecheck|android.vending.CHECK_LICENSE)[^"]*"[^>]*/>', r'', 'CHECK_LICENSE')
     ]
