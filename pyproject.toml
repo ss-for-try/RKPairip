@@ -15,7 +15,7 @@ license = { file = "LICENSE" }
 readme = "README.md"
 
 requires-python = ">=3.12"
-dependencies = ["requests", "r2pipe", "asn1crypto"]
+dependencies = ["requests"]
 
 keywords = ["RKPairip"]
 
