@@ -37,14 +37,12 @@ class FileCheck:
                     print(f"{C.rd}[ {C.pr}File {C.rd}] {C.c}{lo_path} {C.rd}is Corrupt (Checksum Mismatch).{G2}{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Re-Downloading, Need Internet Connection.{C.r}\n")
                     C.os.remove(local_path)
             try:
-                R = requests.get("https://raw.githubusercontent.com/TechnoIndian/RKPairip/main/setup.py")
-                if R.status_code == 200:
-                    V = C.re.search(r'version="([^"]+)"', R.text)
-                    if V:
-                        if V[1] != "3.6":
-                            print(f"\n{C.lb}[ {C.y}Update {C.lb}]{C.c} Updating RKPairip to {C.g}{V[1]}...{G2}")
-                            cmd = (["pip", "install", "git+https://github.com/TechnoIndian/RKPairip.git"] if C.os.name == "nt" else "curl -Ls https://github.com/TechnoIndian/Tools/releases/download/Tools/RKPairip.sh | bash")
-                            C.subprocess.run(cmd, shell=isinstance(cmd, str), check=True)
+                Version = C.re.findall(r'version = "([^"]+)"', requests.get("https://raw.githubusercontent.com/TechnoIndian/RKPairip/main/pyproject.toml").text)[0]
+                if Version != "3.7":
+                    print(f"\n{C.lb}[ {C.y}Update {C.lb}]{C.c} Updating RKPairip 𒁍 {C.g}{Version}...{G2}")
+                    cmd = (["pip", "install", "git+https://github.com/TechnoIndian/RKPairip.git"] if C.os.name == "nt" else "pip install --force-reinstall https://github.com/TechnoIndian/RKPairip/archive/refs/heads/main.zip")
+                    C.subprocess.run(cmd, shell=isinstance(cmd, str), check=True)
+
                 print(f"\n{C.lb}[ {C.pr}Downloading {C.lb}] {C.c}{lo_path}", end='', flush=True)
                 response = requests.get(file_url, stream=True, timeout=10)
 
@@ -67,7 +65,7 @@ class FileCheck:
 
     def F_D(self):
         Jar_Files = [
-            ("https://github.com/TechnoIndian/Tools/releases/download/Tools/APKEditor.jar", self.APKEditor_Path, "304170a35c80594cc6a6cb57398c46fdcf75f1ec463b41dea94cb374703d12d1"),
+            ("https://github.com/TechnoIndian/Tools/releases/download/Tools/APKEditor.jar", self.APKEditor_Path, "c242f5fc4591667a0084668320d0016a20e7c2abae102c1bd4d640e11d9f60ee"),
             ("https://raw.githubusercontent.com/TechnoIndian/Objectlogger/main/Objectlogger.smali", self.Objectlogger, "ff31dd1f55d95c595b77888b9606263256f1ed151a5bf5706265e74fc0b46697"),
             ("https://github.com/TechnoIndian/Tools/releases/download/Tools/lib_Pairip_CoreX.so", self.Pairip_CoreX, "22a7954092001e7c87f0cacb7e2efb1772adbf598ecf73190e88d76edf6a7d2a")
         ]

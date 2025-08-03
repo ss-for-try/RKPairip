@@ -36,7 +36,7 @@ def Delete_Folders(smali_folders, L_S_F):
     print(f"{C_Line}\n\n\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Deleting Pairip Folders {C.g}✔{C.r}")
 
     Pairip_Folders = C.os.path.join("com", "pairip")
-    Target_Regex = C.re.compile(r'\.class public L([^;]+);\n\.super Ljava/lang/Object;\s+.source "\d+.java"\s+# static fields\n\.field public static [^:]+:Ljava/lang/String;')
+    Target_Regex = C.re.compile(r'\.class public L([^;]+);\n\.super Ljava/lang/Object;\n.source "\d+.java"\s+# static fields\n\.field public static [^: ]+:Ljava/lang/String;\n')
     
     Exclude_File = []
     for root, _, files in C.os.walk(C.os.path.join(L_S_F, Pairip_Folders)):
@@ -146,8 +146,7 @@ def Replace_Strings(L_S_F, mtd_p):
                 with open(path, 'w', encoding='utf-8', errors='ignore') as f:
                     for line in lines:
                         if match := C.re.match(r'\s*const-string v0, "([^"]+)"', line):
-                            key = match.group(1)
-                            value = mappings.get(key)
+                            value = mappings.get(match[1])
                             if value:
                                 line = line.split('"')[0] + f'"{value}"'
                             else:

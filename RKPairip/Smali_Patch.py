@@ -20,7 +20,7 @@ def Smali_Patch(smali_folders, CoreX_Hook, isCoreX):
 
     # Custom Device ID
     if CoreX_Hook or isCoreX:
-        patterns.append((r'(\.method [^<]*<clinit>\(\)V\s+.locals \d+\n)', r'\1\tconst-string v0, "_Pairip_CoreX"\n\tinvoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V', f'CoreX_Hook ➸❥ {C.rkj}"lib_Pairip_CoreX.so"'))
+        patterns.append((r'(\.method [^<]*<clinit>\(\)V\s+.locals \d+\n)', r'\1\tconst-string v0, "_Pairip_CoreX"\n\tinvoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V\n', f'CoreX_Hook ➸❥ {C.rkj}"lib_Pairip_CoreX.so"'))
 
     Smali_Files = []
     for smali_folder in smali_folders:
@@ -46,9 +46,9 @@ def Smali_Patch(smali_folders, CoreX_Hook, isCoreX):
 
 # Check_CoreX
 def Check_CoreX(decompile_dir, isAPKTool):
-    lib_paths = C.os.path.join(decompile_dir, 'lib' if isAPKTool else 'root', 'lib')
+    lib_paths = C.os.path.join(decompile_dir, *(['lib'] if isAPKTool else ['root', 'lib']))
     Lib_CoreX = []
-        
+
     for arch in C.os.listdir(lib_paths):
         for root, _, files in C.os.walk(C.os.path.join(lib_paths, arch)):
             for target_file in ['lib_Pairip_CoreX.so', 'libFirebaseCppApp.so']:
@@ -60,9 +60,9 @@ def Check_CoreX(decompile_dir, isAPKTool):
     return False
 
 # HooK CoreX
-def Hook_Core(apk_path, decompile_dir, isAPKTool, package_name):
+def Hook_Core(apk_path, decompile_dir, isAPKTool, Package_Name):
     with C.zipfile.ZipFile(apk_path, 'r') as zf:
-        base_apk = "base.apk" if "base.apk" in zf.namelist() else f"{package_name}.apk"
+        base_apk = "base.apk" if "base.apk" in zf.namelist() else f"{Package_Name}.apk"
     try:
         if C.os.name == 'nt' and C.shutil.which("7z"):
             C.subprocess.run(["7z", "e", apk_path, base_apk, "-y"], text=True, capture_output=True)
@@ -76,7 +76,7 @@ def Hook_Core(apk_path, decompile_dir, isAPKTool, package_name):
         print(f'\n{C.lb}[ {C.c}Dump {C.lb}] {C.g}➸❥ {C.rkj}{base_apk}\n')
         Dump_Apk = "libFirebaseCppApp.so"
         C.os.rename(base_apk, Dump_Apk)
-        lib_paths = C.os.path.join(decompile_dir, 'lib' if isAPKTool else 'root', 'lib')
+        lib_paths = C.os.path.join(decompile_dir, *(['lib'] if isAPKTool else ['root', 'lib']))
         Arch_Paths = []
         for lib in C.os.listdir(lib_paths):
             for root, _, files in C.os.walk(C.os.path.join(lib_paths, lib)):

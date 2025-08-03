@@ -1,8 +1,8 @@
 from .C_M import CM; C = CM()
-G = "\n" * 3
 
 def Extract_Smali(decompile_dir, smali_folders, L_S_F, isAPKTool):
-    Extract_Dir = C.os.path.join(decompile_dir, 'smali_classes') if isAPKTool else C.os.path.join(decompile_dir, 'smali', 'classes')
+
+    Extract_Dir = C.os.path.join(decompile_dir, *(['smali_classes'] if isAPKTool else ['smali', 'classes']))
 
     Target_Regex = C.re.compile(r'\.class public L([^;]+);\n\.super Ljava/lang/Object;\s+# static fields\n\.field public static [^: ]+:Ljava/lang/String;\n')
 

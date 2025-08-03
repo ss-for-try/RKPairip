@@ -29,15 +29,15 @@ def Generate_Objectlogger(decompile_dir, manifest_path, d_manifest_path, L_S_F):
     Update_PKG = content.replace('PACKAGENAME', PKG_Name)
     open(Target_Dest, 'w', encoding='utf-8', errors='ignore').write(Update_PKG)
 
-    print(f"{C.g}     |\n     └──── {C.r}Package Name ~{C.g}$ {C.rkj}➸❥ {C.pn}'{C.g}{PKG_Name[1]}{C.pn}' {C.g}✔\n")
+    print(f"{C.g}     |\n     └──── {C.r}Package Name ~{C.g}$ {C.rkj}➸❥ {C.pn}'{C.g}{PKG_Name}{C.pn}' {C.g}✔\n")
 
 # Fix_Manifest
 def Fix_Manifest(d_manifest_path):
 
     patterns = [
-        (r'\s+android:(splitTypes|requiredSplitTypes)=".*?"', r'', 'Splits'),
-        (r'(\s+<meta-data[^>]*(com.android.(vending.|stamp.|dynamic.apk.))[^>]*/>)', r'', '<meta-data>'),
-        (r'(\s+<[^>]*(com.(pairip.licensecheck|android.vending.CHECK_LICENSE))[^>]*/>)', r'', 'CHECK_LICENSE')
+        (r'\s+android:(splitTypes|requiredSplitTypes)="[^"]*?"', r'', 'Splits'),
+        (r'\s+<meta-data\s+[^>]*"com.android.(vending.|stamp.|dynamic.apk.)[^"]*"[^>]*/>', r'', '<meta-data>'),
+        (r'\s+<[^>]*"com.(pairip.licensecheck|android.vending.CHECK_LICENSE)[^"]*"[^>]*/>', r'', 'CHECK_LICENSE')
     ]
 
     for pattern, replacement, description in patterns:
@@ -61,7 +61,7 @@ def Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S
         application_tag = C.re.search(r'<application\s+[^>]*>', content)[0]
         
         if isCoreX:
-            cleaned_tag = C.re.sub(r'\s+android:extractNativeLibs=".*?"', '', application_tag)
+            cleaned_tag = C.re.sub(r'\s+android:extractNativeLibs="[^"]*?"', '', application_tag)
             content = content.replace(application_tag, C.re.sub(r'>', '\n\tandroid:extractNativeLibs="true">', cleaned_tag))
         else:
             new_permissions = '''\t<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>\n\t<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>\n\t<uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>'''
@@ -72,7 +72,7 @@ def Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S
 
             content = C.re.sub(r'(<uses-sdk\s+[^>]*>)', r'\1\n' + new_permissions, content)
 
-            cleaned_tag = C.re.sub(r'\s+android:(request|preserve)LegacyExternalStorage=".*?"', '', application_tag)
+            cleaned_tag = C.re.sub(r'\s+android:(request|preserve)LegacyExternalStorage="[^"]*?"', '', application_tag)
             content = content.replace(application_tag, C.re.sub(r'>','\n\tandroid:requestLegacyExternalStorage="true"\n\tandroid:preserveLegacyExternalStorage="true">', cleaned_tag))
         
         open(d_manifest_path, 'w', encoding='utf-8', errors='ignore').write(content)
