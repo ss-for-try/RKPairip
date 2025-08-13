@@ -1,60 +1,65 @@
 from .C_M import CM; C = CM()
 
-def Extract_Smali(decompile_dir, smali_folders, L_S_F, isAPKTool):
+def Regex_Scan(Smali_Path, Count, Lock):
+
+    Target_Strings = [
+        r'\.class public L([^;]+);\n\.super Ljava/lang/Object;\s+# static fields\n\.field public static [^: ]+:Ljava/lang/String;\n',
+        r'\.class public Lcom/pairip/application/Application;\n'
+    ]
+
+    Smali = open(Smali_Path, 'r', encoding='utf-8', errors='ignore').read()
+
+    Patterns = [C.re.compile(regex) for regex in Target_Strings]
+
+    for pattern in Patterns:
+        if pattern.search(Smali):
+            with Lock:
+                Count.value += 1
+                print(f"\r{C.lb}[ {C.c}Find Target Smali {C.lb}] {C.g}➸❥ {Count.value}", end='', flush=True)
+            return Smali_Path
+
+def Extract_Smali(decompile_dir, smali_folders, isAPKTool):
 
     Extract_Dir = C.os.path.join(decompile_dir, *(['smali_classes'] if isAPKTool else ['smali', 'classes']))
-
-    Target_Regex = C.re.compile(r'\.class public L([^;]+);\n\.super Ljava/lang/Object;\s+# static fields\n\.field public static [^: ]+:Ljava/lang/String;\n')
-
-    App_Smali = C.os.path.join("com", "pairip", "application", "Application.smali")
-
-    Smali_Files = []; folder_suffix = 2; Pairip_Smali = 0
-    Move_Pairip_Smali = set(); Move_App_Smali = False
     
-    while C.os.path.exists(f"{Extract_Dir}{folder_suffix}"):
-        folder_suffix += 1
-    Extract_Dir = f"{Extract_Dir}{folder_suffix}"
+    Smali_Files, Folder_Suffix =  [], 2
+    
+    while C.os.path.exists(f"{Extract_Dir}{Folder_Suffix}"):
+        Folder_Suffix += 1
+    Extract_Dir = f"{Extract_Dir}{Folder_Suffix}"
     C.os.makedirs(Extract_Dir, exist_ok=True)
-
-    print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Extract Smali {C.rkj}➸❥ {C.g}{C.os.path.basename(Extract_Dir)}")
 
     for smali_folder in smali_folders:
         for root, _, files in C.os.walk(smali_folder):
             for file in files:
-                if file.endswith(".smali"):
-                    Smali_Files.append(C.os.path.join(root, file))
+                Smali_Files.append(C.os.path.join(root, file))
 
-    for Smali_File in Smali_Files:
-        if Smali_File.endswith(App_Smali) and not Move_App_Smali:
-            Relative_Path = App_Smali
-            Move_App_Smali = True
-        else:
-            Smali = open(Smali_File, 'r', encoding='utf-8', errors='ignore').read()
-            match = Target_Regex.search(Smali)
-            if match:
-                Relative_Path = match[1].replace("/", C.os.sep) + ".smali"
-                if Relative_Path not in Move_Pairip_Smali:
-                    Pairip_Smali += 1
-                    Move_Pairip_Smali.add(Relative_Path)
-                else: continue
-            else: continue
+    print()
+    with C.Manager() as M:
+        Count = M.Value('i', 0); Lock = M.Lock()
+        with C.Pool(C.cpu_count()) as PL:
+            matching_files = [path for path in PL.starmap(Regex_Scan, [(Smali_Path, Count, Lock) for Smali_Path in Smali_Files]) if path]
 
-        Target_Path = C.os.path.join(Extract_Dir, Relative_Path)
-        C.os.makedirs(C.os.path.dirname(Target_Path), exist_ok=True)
-        C.shutil.move(Smali_File, Target_Path)
+    print(f" ✔\n")
+    
+    if matching_files:
+        print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Extract Smali {C.rkj}➸❥ {C.g}{C.os.path.basename(Extract_Dir)}")
+        for Smali_File in matching_files:
+            Relative_Path = C.os.path.relpath(Smali_File, C.os.path.dirname(Extract_Dir)).split(C.os.sep, 1)[1]
 
-        print(f"{C.g}  |\n  └──── {C.r} Move ~{C.g}$ {C.y}{C.os.path.basename(Smali_File)} {C.g}✔")
-    print(f"\n\n{C.lb}[ {C.c}Moved {C.lb}] {C.rkj}➸❥ {C.pr}1 {C.g}Application Smali ✔")
-    print(f"\n{C.lb}[ {C.c}Moved {C.lb}] {C.rkj}➸❥ {C.pr}{Pairip_Smali} {C.g}Pairip Smali ✔")
-    print(f"\n{C.r}{'_' * 61}\n")
+            Target_Path = C.os.path.join(Extract_Dir, Relative_Path)
+            C.os.makedirs(C.os.path.dirname(Target_Path), exist_ok=True)
+            C.shutil.move(Smali_File, Target_Path)
+
+            print(f"{C.g}  |\n  └──── {C.r} Move ~{C.g}$ {C.y}{C.os.path.basename(Smali_File)} {C.g}✔")
+        print(f"\n\n{C.lb}[ {C.c}Moved {C.lb}] {C.rkj}➸❥ {C.pr}1 {C.g}Application Smali ✔")
+        print(f"\n{C.lb}[ {C.c}Moved {C.lb}] {C.rkj}➸❥ {C.pr}32 {C.g}Pairip Smali ✔")
 
 # Logs_Injected
 def Logs_Injected(L_S_F):
-    print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Last Smali Folder {C.g}➸❥ {C.y}{C.os.path.basename(L_S_F)} {C.g}✔\n")
-    print(f"\n{C.lb}[ {C.cp}* {C.lb}] {C.c} Logs Inject in Target SMALI")
-    Class_Names = []; Last_Smali_Path = None
-    Sequence = 1; Logs_Inject = 0
-        
+
+    Class_Names, Last_Smali_Path, Sequence = [], None, 1
+
     for root, _, files in C.os.walk(L_S_F):
         for file in files:
             path = C.os.path.join(root, file)
@@ -82,10 +87,9 @@ def Logs_Injected(L_S_F):
 
                 open(path, 'w', encoding='utf-8', errors='ignore').write(content)
 
-                print(f"{C.g}  |\n  └──── {C.r}Logs Inject ~{C.g}$ ➸❥ {C.y}{C.os.path.basename(path)}{C.g} ✔")
-                Last_Smali_Path = path; Sequence += 1; Logs_Inject += 1
+                Last_Smali_Path = path; Sequence += 1
 
-    print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Logs Injected {C.rkj}➸❥ {C.pr}{Logs_Inject} {C.g}✔\n")
+    print(f"\n{C.g}    |\n    └──── {C.r}Logs Injected ~{C.g}$ ➸❥ {C.pr}32 {C.g}Pairip Smali ✔\n")
 
     if Class_Names and Last_Smali_Path:
         print(f'\n{C.lb}[ {C.cp}* {C.lb}] {C.c} Added Callobjects Method\n')
