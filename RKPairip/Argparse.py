@@ -15,7 +15,7 @@ class CustomArgumentParser(C.argparse.ArgumentParser):
         exit(f'\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} {message}\n\n{suggestion}')
 
 def parse_arguments():
-    parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v3.7') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v3.7')
+    parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v3.8') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v3.8')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-i', dest='input', help=f'{C.y}➸ {C.g}Input APK Path...{C.c}')
     group.add_argument('-m', dest='Merge', help=f'{C.y}➸ {C.g}Anti-Split ( Only Merge Apk ){C.c}')

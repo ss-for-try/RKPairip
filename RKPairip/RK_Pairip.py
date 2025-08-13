@@ -152,7 +152,7 @@ def RK_Techno_IND():
             exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd}{e} ✘{C.r}\n")
 
     # Extract Target Smali & Logs Inject
-    if not (CoreX_Hook or License_Check): Extract_Smali(decompile_dir, smali_folders, L_S_F, isAPKTool)
+    if not (CoreX_Hook or License_Check): Extract_Smali(decompile_dir, smali_folders, isAPKTool)
     L_S_F = L_S_C_F(decompile_dir, isAPKTool, Fix_Dex)
     if not (CoreX_Hook or License_Check):
         Logs_Injected(L_S_F)

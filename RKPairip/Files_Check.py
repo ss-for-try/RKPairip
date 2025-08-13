@@ -38,7 +38,7 @@ class FileCheck:
                     C.os.remove(local_path)
             try:
                 Version = C.re.findall(r'version = "([^"]+)"', requests.get("https://raw.githubusercontent.com/TechnoIndian/RKPairip/main/pyproject.toml").text)[0]
-                if Version != "3.7":
+                if Version != "3.8":
                     print(f"\n{C.lb}[ {C.y}Update {C.lb}]{C.c} Updating RKPairip 𒁍 {C.g}{Version}...{G2}")
                     cmd = (["pip", "install", "git+https://github.com/TechnoIndian/RKPairip.git"] if C.os.name == "nt" else "pip install --force-reinstall https://github.com/TechnoIndian/RKPairip/archive/refs/heads/main.zip")
                     C.subprocess.run(cmd, shell=isinstance(cmd, str), check=True)
