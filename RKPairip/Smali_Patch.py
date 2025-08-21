@@ -18,7 +18,7 @@ def Smali_Patch(smali_folders, CoreX_Hook, isCoreX):
             (r'(\.method [^(]*processResponse\(ILandroid/os/Bundle;\)V\s+.locals \d+)[\s\S]*?(\s+return-void\n.end method)', r'\1\2', "processResponse")
         ])
 
-    # ---------------- loadLibrary 𒁍 '_Pairip_CoreX' ----------------
+    # ---------------- loadLibrary ➢ '_Pairip_CoreX' ----------------
     if CoreX_Hook or isCoreX:
         patterns.append((r'(\.method [^<]*<clinit>\(\)V\s+.locals \d+\n)', r'\1\tconst-string v0, "_Pairip_CoreX"\n\tinvoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V\n', f'CoreX_Hook ➸❥ {C.rkj}"lib_Pairip_CoreX.so"'))
 
