@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Pairip"
-version = "3.8"
+version = "3.9"
 authors = [
   { name = "RK_TECHNO_INDIA", email = "TechnoIndian786@gmail.com" }
 ]
@@ -15,7 +15,7 @@ license = { file = "LICENSE" }
 readme = "README.md"
 
 requires-python = ">=3.12"
-dependencies = ["requests"]
+dependencies = ["requests", "multiprocess"]
 
 keywords = ["RKPairip"]
 
