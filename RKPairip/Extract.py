@@ -1,5 +1,6 @@
 from .C_M import CM; C = CM()
 
+# ---------------- Scan Target Regex ----------------
 def Regex_Scan(Smali_Path, Count, Lock):
 
     Target_Strings = [
@@ -13,17 +14,25 @@ def Regex_Scan(Smali_Path, Count, Lock):
 
     for pattern in Patterns:
         if pattern.search(Smali):
-            with Lock:
-                Count.value += 1
-                print(f"\r{C.lb}[ {C.c}Find Target Smali {C.lb}] {C.g}➸❥ {Count.value}", end='', flush=True)
+            if Lock:
+                try:
+                    with Lock:
+                        Count.value += 1
+                        print(f"\r{C.lb}[ {C.c}Find Target Smali {C.lb}] {C.g}➸❥ {Count.value}", end='', flush=True)
+                except Exception:
+                    return None
+            else:
+                Count[0] += 1
+                print(f"\r{C.lb}[ {C.c}Find Target Smali {C.lb}] {C.g}➸❥ {Count[0]}", end='', flush=True)
             return Smali_Path
 
+# ---------------- Extract Smali ----------------
 def Extract_Smali(decompile_dir, smali_folders, isAPKTool):
 
     Extract_Dir = C.os.path.join(decompile_dir, *(['smali_classes'] if isAPKTool else ['smali', 'classes']))
-    
+
     Smali_Files, Folder_Suffix =  [], 2
-    
+
     while C.os.path.exists(f"{Extract_Dir}{Folder_Suffix}"):
         Folder_Suffix += 1
     Extract_Dir = f"{Extract_Dir}{Folder_Suffix}"
@@ -35,13 +44,23 @@ def Extract_Smali(decompile_dir, smali_folders, isAPKTool):
                 Smali_Files.append(C.os.path.join(root, file))
 
     print()
-    with C.Manager() as M:
-        Count = M.Value('i', 0); Lock = M.Lock()
-        with C.Pool(C.cpu_count()) as PL:
-            matching_files = [path for path in PL.starmap(Regex_Scan, [(Smali_Path, Count, Lock) for Smali_Path in Smali_Files]) if path]
+    try:
+        # ---------------- Multiple Threading ----------------
+        with C.Manager() as M:
+            Count = M.Value('i', 0); Lock = M.Lock()
+            with C.Pool(C.cpu_count()) as PL:
+                matching_files = [path for path in PL.starmap(Regex_Scan, [(Smali_Path, Count, Lock) for Smali_Path in Smali_Files]) if path]
+
+    except Exception:
+        # ---------------- Single Threading ----------------
+        matching_files, Count = [], [0]
+        for Smali_Path in Smali_Files:
+            result = Regex_Scan(Smali_Path, Count, None)
+            if result:
+                matching_files.append(result)
 
     print(f" ✔\n")
-    
+
     if matching_files:
         print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Extract Smali {C.rkj}➸❥ {C.g}{C.os.path.basename(Extract_Dir)}")
         for Smali_File in matching_files:
@@ -55,7 +74,7 @@ def Extract_Smali(decompile_dir, smali_folders, isAPKTool):
         print(f"\n\n{C.lb}[ {C.c}Moved {C.lb}] {C.rkj}➸❥ {C.pr}1 {C.g}Application Smali ✔")
         print(f"\n{C.lb}[ {C.c}Moved {C.lb}] {C.rkj}➸❥ {C.pr}32 {C.g}Pairip Smali ✔")
 
-# Logs_Injected
+# ---------------- Logs Injected ----------------
 def Logs_Injected(L_S_F):
 
     Class_Names, Last_Smali_Path, Sequence = [], None, 1
