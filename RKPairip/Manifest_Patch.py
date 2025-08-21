@@ -1,7 +1,7 @@
 from .C_M import CM; C = CM()
 from .Files_Check import FileCheck; F = FileCheck(); F.Set_Path();
 
-# Decode_Manifest
+# ---------------- Decode Manifest ----------------
 def Decode_Manifest(manifest_path, d_manifest_path):
     try:
         process = C.subprocess.run(['java', '-jar', F.Axml2Xml_Path, 'd', manifest_path, d_manifest_path], check=True, capture_output=True, text=True)
@@ -14,7 +14,7 @@ def Decode_Manifest(manifest_path, d_manifest_path):
     except Exception as e:
         print(f"\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} {e} ✘\n")
 
-# Generate ObjectLogger
+# ---------------- Generate ObjectLogger ----------------
 def Generate_Objectlogger(decompile_dir, manifest_path, d_manifest_path, L_S_F):
     
     Target_Dest = C.os.path.join(L_S_F, 'RK_TECHNO_INDIA', 'ObjectLogger.smali')
@@ -23,7 +23,7 @@ def Generate_Objectlogger(decompile_dir, manifest_path, d_manifest_path, L_S_F):
     
     print(f"\n{C.lb}[ {C.c}Generate {C.lb}] {C.g}ObjectLogger.smali {C.rkj}➸❥ {C.y}{C.os.path.relpath(Target_Dest, decompile_dir)}{C.g} ✔")
 
-    # Update Package Name
+    # ---------------- Update Package Name ----------------
     PKG_Name = C.re.search(r'package="([^"]+)"', open(d_manifest_path, 'r', encoding='utf-8', errors='ignore').read())[1]
     content = open(Target_Dest, 'r', encoding='utf-8', errors='ignore').read()
     Update_PKG = content.replace('PACKAGENAME', PKG_Name)
@@ -31,7 +31,7 @@ def Generate_Objectlogger(decompile_dir, manifest_path, d_manifest_path, L_S_F):
 
     print(f"{C.g}     |\n     └──── {C.r}Package Name ~{C.g}$ {C.rkj}➸❥ {C.pn}'{C.g}{PKG_Name}{C.pn}' {C.g}✔\n")
 
-# Fix_Manifest
+# ---------------- Fix Manifest ----------------
 def Fix_Manifest(d_manifest_path):
 
     patterns = [
@@ -48,7 +48,7 @@ def Fix_Manifest(d_manifest_path):
             print(f"\n{C.lb}[ {C.c}Tag {C.lb}] {C.rkj}{description}\n\n{C.lb}[ {C.c}Pattern {C.lb}] {C.g}➸❥ {C.pr}{pattern}\n{C.g}     |\n     └──── {C.r}Patch Cleaned Up {C.rkj}➸❥ {C.pr}'{C.g}{C.os.path.basename(d_manifest_path)}{C.pr}' {C.g}✔\n")
         open(d_manifest_path, 'w', encoding='utf-8', errors='ignore').write(new_content)
 
-# Patch_Manifest
+# ---------------- Patch Manifest ----------------
 def Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isCoreX):
     if isAPKTool:
         Decode_Manifest(manifest_path, d_manifest_path)
@@ -81,7 +81,7 @@ def Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S
         print(f"\n{C.lb}[ {C.c}Storage Permission {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}AndroidManifest.xml{C.pr}' {C.g}✔\n")
     if isCoreX and isAPKTool: Encode_Manifest(decompile_dir, manifest_path, d_manifest_path)
 
-# Replace_Application
+# ---------------- Replace Application ----------------
 def Replace_Application(manifest_path, d_manifest_path, Super_Value, App_Name, isAPKTool, Fix_Dex):
     if isAPKTool or Fix_Dex:
         Decode_Manifest(manifest_path, d_manifest_path)
@@ -91,7 +91,7 @@ def Replace_Application(manifest_path, d_manifest_path, Super_Value, App_Name, i
     print(f"\n{C.lb}[ {C.c}Replaced {C.lb}] {C.pr}'{C.g}{App_Name}{C.pr}' {C.g}➸❥ {C.pr}'{C.c}{Super_Value}{C.pr}' {C.g}✔\n")
     open(manifest_path, 'w', encoding='utf-8', errors='ignore').write(updated)
 
-# Encoded Mainfest
+# ---------------- Encoded Mainfest ----------------
 def Encode_Manifest(decompile_dir, manifest_path, d_manifest_path):
     try:
         process = C.subprocess.run(['java', '-jar', F.Axml2Xml_Path, 'e', d_manifest_path, manifest_path], check=True, capture_output=True, text=True)

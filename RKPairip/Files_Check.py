@@ -1,5 +1,4 @@
 from .C_M import CM; C = CM()
-G2 = "\n" * 2
 
 class FileCheck:
     # Full path to jar & other
@@ -34,12 +33,12 @@ class FileCheck:
                 if self.calculate_checksum(local_path) == expected_checksum:
                     continue
                 else:
-                    print(f"{C.rd}[ {C.pr}File {C.rd}] {C.c}{lo_path} {C.rd}is Corrupt (Checksum Mismatch).{G2}{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Re-Downloading, Need Internet Connection.{C.r}\n")
+                    print(f"{C.rd}[ {C.pr}File {C.rd}] {C.c}{lo_path} {C.rd}is Corrupt (Checksum Mismatch).\n\n{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Re-Downloading, Need Internet Connection.\n")
                     C.os.remove(local_path)
             try:
                 Version = C.re.findall(r'version = "([^"]+)"', requests.get("https://raw.githubusercontent.com/TechnoIndian/RKPairip/main/pyproject.toml").text)[0]
                 if Version != "3.8":
-                    print(f"\n{C.lb}[ {C.y}Update {C.lb}]{C.c} Updating RKPairip 𒁍 {C.g}{Version}...{G2}")
+                    print(f"\n{C.lb}[ {C.y}Update {C.lb}]{C.c} Updating RKPairip 𒁍 {C.g}{Version}...\n\n")
                     cmd = (["pip", "install", "git+https://github.com/TechnoIndian/RKPairip.git"] if C.os.name == "nt" else "pip install --force-reinstall https://github.com/TechnoIndian/RKPairip/archive/refs/heads/main.zip")
                     C.subprocess.run(cmd, shell=isinstance(cmd, str), check=True)
 
@@ -59,9 +58,9 @@ class FileCheck:
                     print(f"\n{C.g}       |\n       └──── {C.r}Downloaded ~{C.g}$ {lo_path} Successfully. ✔\n")
 
                 else:
-                    exit(f'{G2}{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} Failed to download {C.y}{lo_path} {C.rd}Status Code: {response.status_code}{G2}{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Restart Script...{C.r}\n')
+                    exit(f'\n\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} Failed to download {C.y}{lo_path} {C.rd}Status Code: {response.status_code}\n\n{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Restart Script...\n')
             except requests.exceptions.RequestException:
-                exit(f'{G2}{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} Got an error while Fetching {C.y}{local_path}{G2}{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} No internet Connection{G2}{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Internet Connection is Required to Download {C.y}{lo_path}\n')
+                exit(f'\n\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} Got an error while Fetching {C.y}{local_path}\n\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} No internet Connection\n\n{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Internet Connection is Required to Download {C.y}{lo_path}\n')
 
     def F_D(self):
         Jar_Files = [

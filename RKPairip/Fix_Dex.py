@@ -3,37 +3,37 @@ from .Files_Check import FileCheck; F = FileCheck(); F.Set_Path()
 
 C_Line = f"{C.r}{'_' * 61}"
 
-# Scan_Application
+# ---------------- Scan Application ----------------
 def Scan_Application(apk_path, manifest_path, d_manifest_path, isAPKTool):
+
     App_Name = ''
+
     if not isAPKTool:
-        manifest = open(manifest_path, 'r', encoding='utf-8', errors='ignore').read()
-        App_Name = C.re.search(r'<application[^>]*android:name="(.*?)"', manifest)
+        App_Name = C.re.search(r'<application[^>]*android:name="([^"]*)"', open(manifest_path, 'r', encoding='utf-8', errors='ignore').read())[1]
         if App_Name:
-            print(f"\n{C.lb}[ {C.c}Match Application {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{App_Name[1]}{C.pr}' {C.g} ✔{C.r}\n")
-            return App_Name[1]
+            print(f"\n{C.lb}[ {C.c}Match Application {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{App_Name}{C.pr}' {C.g} ✔\n")
+            return App_Name
 
     if C.os.name == 'posix':
         result = C.subprocess.run(['aapt', 'dump', 'xmltree', apk_path, 'AndroidManifest.xml'], check=True, capture_output=True, text=True)
-        App_Name = C.re.search(r'E: application.*[\s\S]*?A: android:name.*="(.*?)"', result.stdout)
+        App_Name = C.re.search(r'E: application.*[\s\S]*?A: android:name.*="([^"]*)"', result.stdout)[1]
         if App_Name:
-            print(f"\n{C.lb}[ {C.c}Match Application {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{App_Name[1]}{C.pr}' {C.g} ✔{C.r}\n")
-            return App_Name[1]
+            print(f"\n{C.lb}[ {C.c}Match Application {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{App_Name}{C.pr}' {C.g} ✔\n")
+            return App_Name
 
     if not App_Name:
         # Decode_Manifest
         C.subprocess.run(['java', '-jar', F.Axml2Xml_Path, 'd', manifest_path, d_manifest_path], capture_output=True, text=True, check=True)
-        manifest = open(d_manifest_path, 'r', encoding='utf-8', errors='ignore').read()
-        App_Name = C.re.search(r'<application[^>]*android:name="(.*?)"', manifest)
+        App_Name = C.re.search(r'<application[^>]*android:name="([^"]*)"', open(d_manifest_path, 'r', encoding='utf-8', errors='ignore').read())[1]
         if App_Name:
-            print(f"\n{C.lb}[ {C.c}Match Application {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{App_Name[1]}{C.pr}' {C.g} ✔{C.r}\n")
-            return App_Name[1]
+            print(f"\n{C.lb}[ {C.c}Match Application {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}{App_Name}{C.pr}' {C.g} ✔\n")
+            return App_Name
             C.os.remove(manifest_path)
-    return App_Name[1]
+    return App_Name
 
-# Delete Pairip Folder
+# ---------------- Delete Pairip Folder ----------------
 def Delete_Folders(smali_folders, L_S_F):
-    print(f"{C_Line}\n\n\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Deleting Pairip Folders {C.g}✔{C.r}")
+    print(f"{C_Line}\n\n\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Deleting Pairip Folders {C.g}✔")
 
     Pairip_Folders = C.os.path.join("com", "pairip")
     Target_Regex = C.re.compile(r'\.class public L([^;]+);\n\.super Ljava/lang/Object;\n.source "\d+.java"\s+# static fields\n\.field public static [^: ]+:Ljava/lang/String;\n')
@@ -68,8 +68,7 @@ def Delete_Folders(smali_folders, L_S_F):
 
     print(f"\n{C_Line}\n\n")
 
-
-# Scan Target Regex
+# ---------------- Scan Target Regex ----------------
 def Regex_Scan(Smali_Path, Target_Regex, Count, Lock):
             
     Smali = open(Smali_Path, 'r', encoding='utf-8', errors='ignore').read()
@@ -78,12 +77,19 @@ def Regex_Scan(Smali_Path, Target_Regex, Count, Lock):
 
     for Regex in Regexs:
         if Regex.search(Smali):
-            with Lock:
-                Count.value += 1
-                print(f"\r{C.lb}[ {C.c}Find Target Smali {C.lb}] {C.g}➸❥ {Count.value}", end='', flush=True)
+            if Lock:
+                try:
+                    with Lock:
+                        Count.value += 1
+                        print(f"\r{C.lb}[ {C.c}Find Target Smali {C.lb}] {C.g}➸❥ {Count.value}", end='', flush=True)
+                except Exception:
+                    return None
+            else:
+                Count[0] += 1
+                print(f"\r{C.lb}[ {C.c}Find Target Smali {C.lb}] {C.g}➸❥ {Count[0]}", end='', flush=True)
             return Smali_Path
                 
-# Target String
+# ---------------- Smali Patcher ----------------
 def Smali_Patcher(smali_folders, L_S_F):
     Smali_Paths = []
     patterns = [
@@ -103,10 +109,20 @@ def Smali_Patcher(smali_folders, L_S_F):
                 if file.endswith('.smali'):
                     Smali_Paths.append(C.os.path.join(root, file))
 
-    with C.Manager() as M:
-        Count = M.Value('i', 0); Lock = M.Lock()
-        with C.Pool(C.cpu_count()) as PL:
-            matching_files = [path for path in PL.starmap(Regex_Scan, [(Smali_Path, Target_Regex, Count, Lock) for Smali_Path in Smali_Paths]) if path]
+    try:
+        # ---------------- Multiple Threading ----------------
+        with C.Manager() as M:
+            Count = M.Value('i', 0); Lock = M.Lock()
+            with C.Pool(C.cpu_count()) as PL:
+                matching_files = [path for path in PL.starmap(Regex_Scan, [(Smali_Path, Target_Regex, Count, Lock) for Smali_Path in Smali_Paths]) if path]
+
+    except Exception:
+        # ---------------- Single Threading ----------------
+        matching_files, Count = [], [0]
+        for Smali_Path in Smali_Paths:
+            result = Regex_Scan(Smali_Path, Target_Regex, Count, None)
+            if result:
+                matching_files.append(result)
 
     print(f" {C.g}✔", flush=True)
     print(f'\n{C_Line}\n')
@@ -133,7 +149,7 @@ def Smali_Patcher(smali_folders, L_S_F):
                     print(f"{C.g}     |\n     └──── {C.r}~{C.g}$ {C.y}{C.os.path.basename(file_path)} {C.g}✔")
                 print(f"\n{C.lb}[ {C.c}Applied {C.lb}] {C.g}➸❥ {C.pr}{count_applied} {C.c}Time/Smali {C.g}✔\n\n{C_Line}\n")
 
-# Translate String
+# ---------------- Replace Strings ----------------
 def Replace_Strings(L_S_F, mtd_p):
     mappings = dict(C.re.findall(r'\s"(.*)"\s"(.*)"', open(mtd_p, 'r', encoding='utf-8', errors='ignore').read()))
 

@@ -1,6 +1,6 @@
 from .C_M import CM; C = CM()
 
-# Version
+# ---------------- Version Mapping ----------------
 def Version():
     version_mapping = {
         "3.8.1": ["3.32.1", "3.32.2", "3.32.3", "3.32.4", "3.32.5", "3.32.6", "3.32.7", "3.32.8"],
@@ -88,6 +88,7 @@ def Version():
         "2.9.0": ["1.20.0", "1.20.1"]}
     return version_mapping
 
+# ---------------- Mapping Flutter Dart Version ----------------
 def E_V_C(apk_path, version_mapping):
     flutter_libs = []; isFlutter = False
 
@@ -98,7 +99,7 @@ def E_V_C(apk_path, version_mapping):
                 isFlutter = True
                 break
         if flutter_libs:
-            print(f"\n\n{C.lb}[ {C.y}FYI ! {C.lb}] {C.rkj}So Generate {C.pr}'{C.g}libflutter.so{C.pr}'{C.rkj} in Github With {C.pr}'{C.g}flutter-build.yml{C.pr}' {C.rkj}Script & Then Replace With Your {C.pr}'{C.g}libflutter.so{C.pr}'{C.r}")
+            print(f"\n\n{C.lb}[ {C.y}FYI ! {C.lb}] {C.rkj}So Generate {C.pr}'{C.g}libflutter.so{C.pr}'{C.rkj} in Github With {C.pr}'{C.g}flutter-build.yml{C.pr}' {C.rkj}Script & Then Replace With Your {C.pr}'{C.g}libflutter.so{C.pr}'")
             
             mapped_versions = []
 
@@ -126,6 +127,7 @@ def E_V_C(apk_path, version_mapping):
                 create_workflow(mapped_versions, C.os.path.dirname(apk_path))
             return mapped_versions
 
+# ---------------- Create Workflow ----------------
 def create_workflow(F_S_V, output_path):
     file_paths = []
     for version in F_S_V:

@@ -1,6 +1,6 @@
 from .C_M import CM; C = CM();
 
-# Application Name
+# ---------------- Application Name ----------------
 def Application_Name(L_S_F):
     pattern = C.re.compile(r'\.class public Lcom/pairip/application/Application;\s+\.super L([^;\s]+)', C.re.DOTALL)
     super_value = None
@@ -17,7 +17,7 @@ def Application_Name(L_S_F):
             break
     return super_value
 
-# Translate_Smali_Name
+# ---------------- Translate Smali Name ----------------
 def Translate_Smali_Name(folder_name, isAPKTool):
     if isAPKTool:
         if folder_name == "smali":
@@ -35,7 +35,7 @@ def Translate_Smali_Name(folder_name, isAPKTool):
 
 moved_files = []; smali_folders = []
 
-# Merge_Smali_Folders
+# ---------------- Merge Smali Folders ----------------
 def Merge_Smali_Folders(decompile_dir, isAPKTool, L_S_F):
     global moved_files, smali_folders
     moved_files = []; smali_folders = []
@@ -54,14 +54,14 @@ def Merge_Smali_Folders(decompile_dir, isAPKTool, L_S_F):
                 C.os.makedirs(C.os.path.dirname(dest), exist_ok=True)
                 C.shutil.move(src, dest)
                 moved_files.append((src, dest))
-        print(f"\n{C.lb}[ {C.c}Merge {C.lb}] {C.rkj}➸❥ {C.pn}'{C.g}{C.os.path.basename(last_path)}{C.pn}' {C.c}& {C.pn}'{C.g}{C.os.path.basename(prev_path)}{C.pn}' {C.g}✔{C.r}\n")
+        print(f"\n{C.lb}[ {C.c}Merge {C.lb}] {C.rkj}➸❥ {C.pn}'{C.g}{C.os.path.basename(last_path)}{C.pn}' {C.c}& {C.pn}'{C.g}{C.os.path.basename(prev_path)}{C.pn}' {C.g}✔\n")
         C.shutil.rmtree(L_S_F)
     return moved_files
 
-# UnMerge
+# ---------------- UnMerge Smali Folder ----------------
 def UnMerge():
     global moved_files, smali_folders
     for src, dest in moved_files:
         C.os.makedirs(C.os.path.dirname(src), exist_ok=True)
         C.shutil.move(dest, src)
-    print(f"\n\n{C.lb}[ {C.c}Reverse Merge {C.lb}] {C.rkj}➸❥ {C.pn}'{C.g}{C.os.path.basename(smali_folders[-2])}{C.pn}' {C.c}& {C.pn}'{C.g}{C.os.path.basename(smali_folders[-1])}{C.pn}' {C.g}✔{C.r}\n")
+    print(f"\n\n{C.lb}[ {C.c}Reverse Merge {C.lb}] {C.rkj}➸❥ {C.pn}'{C.g}{C.os.path.basename(smali_folders[-2])}{C.pn}' {C.c}& {C.pn}'{C.g}{C.os.path.basename(smali_folders[-1])}{C.pn}' {C.g}✔\n")

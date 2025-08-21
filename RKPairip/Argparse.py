@@ -2,6 +2,7 @@ from .C_M import CM; C = CM()
 G = "\n" * 3
 
 class CustomArgumentParser(C.argparse.ArgumentParser):
+    # ---------------- Error Handling ----------------
     def error(self, message):
         suggestion = ""
         for action in self._actions:
@@ -14,6 +15,7 @@ class CustomArgumentParser(C.argparse.ArgumentParser):
 
         exit(f'\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} {message}\n\n{suggestion}')
 
+# ---------------- Parse Arguments ----------------
 def parse_arguments():
     parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v3.8') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v3.8')
     group = parser.add_mutually_exclusive_group(required=True)

@@ -17,8 +17,7 @@ def Clear(): C.os.system('cls' if C.os.name == 'nt' else 'clear')
 
 Clear()
 
-G2 = "\n" * 2
-required_modules = ['requests']
+required_modules = ['requests', 'multiprocess']
 for module in required_modules:
     try:
         __import__(module)
@@ -29,8 +28,9 @@ for module in required_modules:
             print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} {module} Installed Successfully.{C.g} ✔\n")
             Clear()
         except (C.subprocess.CalledProcessError, Exception):
-            exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} No Internet Connection. ✘{G2}{C.lb}[ {C.rd}INFO {C.lb}]{C.rd} Internet Connection is Required to Install {C.rd}'{C.g}pip install {module}{C.rd}' ✘{C.r}\n")
+            exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} No Internet Connection. ✘\n\n{C.lb}[ {C.rd}INFO {C.lb}]{C.rd} Internet Connection is Required to Install {C.rd}'{C.g}pip install {module}{C.rd}' ✘\n")
 
+# ---------------- Check Dependencies ----------------
 def check_dependencies():
     try:
         C.subprocess.run(['java', '--version'], check=True, text=True, capture_output=True)
@@ -38,10 +38,11 @@ def check_dependencies():
         if C.os.name == 'posix':
             install_package('openjdk-17')
         else:
-            exit(f'{G2}{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} Java is not installed on Your System. ✘{G2}{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Install Java and run script again in new CMD. ✘{G2}{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Verify Java installation using {C.rd}"{C.g}java --version{C.rd}" command in CMD')
+            exit(f'\n\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} Java is not installed on Your System. ✘\n\n{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Install Java and run script again in new CMD. ✘\n\n{C.lb}[ {C.y}INFO ! {C.lb}]{C.rd} Verify Java installation using {C.rd}"{C.g}java --version{C.rd}" command in CMD')
 
     if C.os.name == 'posix': install_package('aapt')
 
+# ---------------- Install Package ----------------
 def install_package(pkg):
     try:
         result = C.subprocess.run(['pkg', 'list-installed'], capture_output=True, text=True, check=True)
@@ -51,7 +52,7 @@ def install_package(pkg):
             print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} {pkg} Installed Successfully.{C.g} ✔\n")
             Clear()
     except (C.subprocess.CalledProcessError, Exception) as e:
-        exit(f"{G2}{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} No Internet Connection. ✘{G2}{C.lb}[ {C.rd}INFO {C.lb}]{C.rd} Internet Connection is Required to Installation {C.rd}'{C.g}pkg install {pkg}{C.rd}' ✘{C.r}\n")
+        exit(f"\n\n{C.lb}[ {C.rd}Error ! {C.lb}]{C.rd} No Internet Connection. ✘\n\n{C.lb}[ {C.rd}INFO {C.lb}]{C.rd} Internet Connection is Required to Installation {C.rd}'{C.g}pkg install {pkg}{C.rd}' ✘\n")
 
 check_dependencies()
 
@@ -70,11 +71,11 @@ print(f'''————————|———————————————
 }{C.r}
 ————————|——————————————————|—————————————————|——————————————|————\n''')
 
-# enable_wake_lock
+# ---------------- enable_wake_lock ----------------
 def enable_wake_lock():
     print(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Acquiring Wake Lock...\r")
 
-# Target All Classes Folder
+# ---------------- Target All Classes Folder ----------------
 def Find_Smali_Folders(decompile_dir, isAPKTool, Fix_Dex):
     smali_path = decompile_dir if isAPKTool or Fix_Dex else C.os.path.join(decompile_dir, "smali")
     prefix = "smali_classes" if isAPKTool or Fix_Dex else "classes"
@@ -82,16 +83,16 @@ def Find_Smali_Folders(decompile_dir, isAPKTool, Fix_Dex):
     
     return [C.os.path.join(smali_path, f) for f in folders]
 
-# Target Last Classes Folder
+# ---------------- Target Last Classes Folder ----------------
 def L_S_C_F(decompile_dir, isAPKTool, Fix_Dex):
     smali_folders = Find_Smali_Folders(decompile_dir, isAPKTool, Fix_Dex)
     return smali_folders[-1] if smali_folders else None
 
-# disable_wake_lock
+# ---------------- disable_wake_lock ----------------
 def disable_wake_lock():
     exit(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Releasing Wake Lock...\n")
 
-# Execute
+# ---------------- Execute Main Function ----------------
 def RK_Techno_IND():
     args = parse_arguments()
     M_Skip=args.MergeSkip
@@ -102,7 +103,7 @@ def RK_Techno_IND():
     
     apk_path = args.input or args.Merge
 
-    if not C.os.path.isfile(apk_path): exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} APK file '{apk_path}' not found. ✘{C.r}\n")
+    if not C.os.path.isfile(apk_path): exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} APK file '{apk_path}' not found. ✘\n")
 
     apk_path = Anti_Split(apk_path, args.Merge, CoreX_Hook)
 
@@ -113,7 +114,7 @@ def RK_Techno_IND():
     manifest_path = C.os.path.join(decompile_dir, 'AndroidManifest.xml')
     d_manifest_path = C.os.path.join(decompile_dir, 'AndroidManifest_d.xml')
     mtd_path = "/sdcard/MT2/dictionary/"
-    C_Line = f"{C.r}{'_' * 61}"; G = "\n" * 3
+    C_Line = f"{C.r}{'_' * 61}"
     Logo = f'\n🚩 {C.r}࿗ {C.rkj}Jai Shree Ram {C.r}࿗ 🚩\n     🛕🛕🙏🙏🙏🛕🛕\n'
     START = f'\n{C.lb}[{C.c}  Time Spent  {C.lb}] {C.g}︻デ═一 {C.y}'; END=f'{C.r} Seconds\n'
 
@@ -134,7 +135,7 @@ def RK_Techno_IND():
             App_Name = Scan_Application(apk_path, manifest_path, d_manifest_path, Fix_Dex)
             if App_Name:
                 Super_Value = Application_Name(L_S_F)
-                print(f'\n{C.lb}[{C.c}  APPLICATION  {C.lb}] {C.g}︻デ═一 {Super_Value}  ✔{C.r}\n')
+                print(f'\n{C.lb}[{C.c}  APPLICATION  {C.lb}] {C.g}︻デ═一 {Super_Value}  ✔\n')
                 Replace_Application(manifest_path, d_manifest_path, Super_Value, App_Name, isAPKTool, Fix_Dex)
                 Encode_Manifest(decompile_dir, manifest_path, d_manifest_path)
             else:
@@ -149,7 +150,7 @@ def RK_Techno_IND():
             if C.os.name == 'posix': (C.subprocess.run(['termux-wake-unlock']), disable_wake_lock())
             exit(0)
         except Exception as e:
-            exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd}{e} ✘{C.r}\n")
+            exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd}{e} ✘\n")
 
     # Extract Target Smali & Logs Inject
     if not (CoreX_Hook or License_Check): Extract_Smali(decompile_dir, smali_folders, isAPKTool)
@@ -157,7 +158,7 @@ def RK_Techno_IND():
     if not (CoreX_Hook or License_Check):
         Logs_Injected(L_S_F)
         Super_Value = Application_Name(L_S_F)
-        OR_App=f'\n{C.lb}[{C.c}  APPLICATION  {C.lb}] {C.g}︻デ═一 {Super_Value}  ✔{C.r}\n'
+        OR_App=f'\n{C.lb}[{C.c}  APPLICATION  {C.lb}] {C.g}︻デ═一 {Super_Value}  ✔\n'
         smali_folders = Find_Smali_Folders(decompile_dir, isAPKTool, Fix_Dex)
 
     # Hook CoreX
@@ -173,7 +174,7 @@ def RK_Techno_IND():
     if not (CoreX_Hook or License_Check): 
         # Merge smali
         if M_Skip:
-            print(f"\n{C.lb}[ {C.y}INFO ! {C.lb}] {C.g} Skip Merge Last Dex {C.y}{C.os.path.basename(L_S_F)} {C.g} & Add Seprate (For Dex Redivision) {C.r}\n")
+            print(f"\n{C.lb}[ {C.y}INFO ! {C.lb}] {C.g} Skip Merge Last Dex {C.y}{C.os.path.basename(L_S_F)} {C.g} & Add Seprate (For Dex Redivision)\n")
             pass
         else:
             Merge_Smali_Folders(decompile_dir, isAPKTool, L_S_F)
@@ -184,16 +185,16 @@ def RK_Techno_IND():
     if CoreX_Hook or License_Check:
         CRC_Fix(M_Skip, apk_path, build_dir, ["AndroidManifest.xml", ".dex"])
         C.shutil.rmtree(decompile_dir)
-        print(f"{C_Line}{G2}" + START + f'{C.time.time() - start_time:.2f}' + END + f'\n{Logo}')
+        print(f"{C_Line}\n\n" + START + f'{C.time.time() - start_time:.2f}' + END + f'\n{Logo}')
         C.os.name == 'posix' and (C.subprocess.run(['termux-wake-unlock']), disable_wake_lock()); exit(0)
 
     # CRCFix
     Final_Apk = CRC_Fix(M_Skip, apk_path, build_dir, ["AndroidManifest.xml", ".dex"])
     if isAPKTool: FixSigBlock(decompile_dir, apk_path, build_dir, rebuild_dir)
 
-    print(f'\n{C.lb}[{C.c}  Final APK  {C.lb}] {C.g}︻デ═一 {C.y} {Final_Apk}  {C.g}✔{C.r}\n')
+    print(f'\n{C.lb}[{C.c}  Final APK  {C.lb}] {C.g}︻デ═一 {C.y} {Final_Apk}  {C.g}✔\n')
     elapsed_time = C.time.time() - start_time
-    print(f"{C_Line}{G}{C.lb}[{C.c}  Last Dex  {C.lb}] {C.g}︻デ═一 {C.pr}'{C.g}{C.os.path.basename(Translate_Smali)}{C.pr}' {C.y}( Translate with MT )  {C.g}✔{C.r}\n")
+    print(f"{C_Line}\n\n\n{C.lb}[{C.c}  Last Dex  {C.lb}] {C.g}︻デ═一 {C.pr}'{C.g}{C.os.path.basename(Translate_Smali)}{C.pr}' {C.y}( Translate with MT )  {C.g}✔\n")
 
     # APPLICATION NAME
     print(OR_App)
@@ -208,13 +209,13 @@ def RK_Techno_IND():
         UnMerge_input = input(f"\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Do U Want Repair Dex (Press Enter To Proceed or 'q' to exit or 'm' to More Info) | Hook If Apk Crash Then Try with 'x'\n{C.g}  |\n  └──── {C.r}~{C.g}$ : {C.y}").strip().lower()
         if UnMerge_input == 'q':
             C.shutil.rmtree(decompile_dir)
-            print(f"\n{C_Line}{G}{C.lb}[{C.y} INFO ! {C.lb}] {C.c} Now you have to manually Translate the Last Dex with MT & again input with -r Flag the Command {C.g}( Copy Below Command & Run After Translate Dex )\n{C.g}  |\n  └──── {C.r}~{C.g}${C.y}  RKPairip -i {build_dir} -r{C.r}{G2}{C_Line}\n")
+            print(f"\n{C_Line}\n\n\n{C.lb}[{C.y} INFO ! {C.lb}] {C.c} Now you have to manually Translate the Last Dex with MT & again input with -r Flag the Command {C.g}( Copy Below Command & Run After Translate Dex )\n{C.g}  |\n  └──── {C.r}~{C.g}${C.y}  RKPairip -i {build_dir} -r\n\n{C_Line}\n")
             break
         elif UnMerge_input == 'm':
-            print(f'\n{C_Line}{G}{C.lb}[{C.y} MORE INFO {C.lb}] {C.g} - To generate .mtd file, first install the {C.rkj}“{C.os.path.basename(apk_path)}”{C.g} in Multi App/Dual Space and save the .mtd in "/sdcard/MT2/dictionary/"{G2}{C.lb}[{C.y} NOTE {C.lb}] {C.g} - if u use root or VM so .mtd will save path of {C.y}"/data/data/{Package_Name}/dictionary/" {C.g}& then u just move .mtd file to path of {C.y}"/sdcard/MT2/dictionary/"{G2}{C.lb}[{C.y} FYI {C.lb}] {C.g} - Make sure you have generated a new .mtd before pressing enter as using the old .mtd may cause a apk crash{G2}{C.lb}[{C.y} INFO {C.lb}] {C.g} - The script will handle it automatically if the .mtd file exists in the target path.\n')
+            print(f'\n{C_Line}\n\n\n{C.lb}[{C.y} MORE INFO {C.lb}] {C.g} - To generate .mtd file, first install the {C.rkj}“{C.os.path.basename(apk_path)}”{C.g} in Multi App/Dual Space and save the .mtd in "/sdcard/MT2/dictionary/"\n\n{C.lb}[{C.y} NOTE {C.lb}] {C.g} - if u use root or VM so .mtd will save path of {C.y}"/data/data/{Package_Name}/dictionary/" {C.g}& then u just move .mtd file to path of {C.y}"/sdcard/MT2/dictionary/"\n\n{C.lb}[{C.y} FYI {C.lb}] {C.g} - Make sure you have generated a new .mtd before pressing enter as using the old .mtd may cause a apk crash\n\n{C.lb}[{C.y} INFO {C.lb}] {C.g} - The script will handle it automatically if the .mtd file exists in the target path.\n')
             continue
         elif UnMerge_input == 'x' and not (CoreX_Hook or Check_CoreX(decompile_dir, isAPKTool) or Check_Split(args.input, isCoreX=True)):
-            print(f"\n{C_Line}{G}{C.lb}[{C.y} Info {C.lb}] {C.c}Hook lib_Pairip_CoreX.so & loadLibrary in VMRunner Class.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} This Hook Work in Some Apk Like Flutter/Unity & Try on Crash Apk.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} Note Some Time This Apk Working Directly with Sign When Directly Working Hook Then why need Bypass Pairip, because u can also modify dex in Apk.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} Still U want Bypass Pairip then Dump '.mtd' & Press Enter ( for mtd dump Use  Multi_App cuz Storage Permission not added in Apk ){G2}{C_Line}\n")
+            print(f"\n{C_Line}\n\n\n{C.lb}[{C.y} Info {C.lb}] {C.c}Hook lib_Pairip_CoreX.so & loadLibrary in VMRunner Class.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} This Hook Work in Some Apk Like Flutter/Unity & Try on Crash Apk.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} Note Some Time This Apk Working Directly with Sign When Directly Working Hook Then why need Bypass Pairip, because u can also modify dex in Apk.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} Still U want Bypass Pairip then Dump '.mtd' & Press Enter ( for mtd dump Use  Multi_App cuz Storage Permission not added in Apk )\n\n{C_Line}\n")
             
             Smali_Patch(smali_folders, CoreX_Hook, isCoreX=True)
             Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isCoreX=True)
@@ -231,14 +232,14 @@ def RK_Techno_IND():
                 while True:
                     if C.os.path.exists(mtd_path):
                         mtd_files = [file for file in C.os.listdir(mtd_path) if file.startswith(Package_Name) and file.endswith('.mtd')]
-                        if not mtd_files: print(f"{G2}{C.lb}[{C.y} Warn ! {C.lb}] {C.rd} No {C.g}{Package_Name}..... .mtd {C.g}file found in {C.y}{mtd_path}\n")
+                        if not mtd_files: print(f"\n\n{C.lb}[{C.y} Warn ! {C.lb}] {C.rd} No {C.g}{Package_Name}..... .mtd {C.g}file found in {C.y}{mtd_path}\n")
                         else:
                             UnMerge()
                             mtd_file = max(mtd_files, key=lambda file: C.os.path.getmtime(C.os.path.join(mtd_path, file)))
-                            print(f"\n{C.lb}[{C.y} INFO ! {C.lb}] {C.c}Founded {C.g}➸❥ {mtd_file} ✔{G2}{C_Line}\n")
+                            print(f"\n{C.lb}[{C.y} INFO ! {C.lb}] {C.c}Founded {C.g}➸❥ {mtd_file} ✔\n\n{C_Line}\n")
                             break
                     else:
-                        print(f"{G2}{C.lb}[{C.y} Warn ! {C.lb}] {C.rd} No such directory found: {C.y}{mtd_path}\n")
+                        print(f"\n\n{C.lb}[{C.y} Warn ! {C.lb}] {C.rd} No such directory found: {C.y}{mtd_path}\n")
                     user_input = input(f"\n{C.lb}[{C.y} Input {C.lb}] {C.c}If You Want To Retry, Press Enter & Exit To Script {C.pr}'q' : {C.y}")
                     if user_input.lower() == 'q': break
 
@@ -258,7 +259,7 @@ def RK_Techno_IND():
                     break
                 else:
                     C.shutil.rmtree(decompile_dir)
-                    print(f"\n{C_Line}{G}{C.lb}[{C.y} INFO ! {C.lb}] {C.rd} No Valid .mtd File Found. ✘{C.r}{G}{C.lb}[{C.y} INFO ! {C.lb}] {C.c} Now you have to manually Translate the Last Dex with MT & again input with -r Flag the Command {C.g}( Copy Below Command & Run After Translate Dex )\n{C.g}  |\n  └──── {C.r}~{C.g}${C.y}  RKPairip -i {build_dir} -r{C.r}{G2}{C_Line}\n")
+                    print(f"\n{C_Line}\n\n\n{C.lb}[{C.y} INFO ! {C.lb}] {C.rd} No Valid .mtd File Found. ✘\n\n\n{C.lb}[{C.y} INFO ! {C.lb}] {C.c} Now you have to manually Translate the Last Dex with MT & again input with -r Flag the Command {C.g}( Copy Below Command & Run After Translate Dex )\n{C.g}  |\n  └──── {C.r}~{C.g}${C.y}  RKPairip -i {build_dir} -r\n\n{C_Line}\n")
                     break
 
     print(Logo)
