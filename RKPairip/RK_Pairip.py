@@ -234,7 +234,7 @@ def RK_Techno_IND():
                         mtd_files = [file for file in C.os.listdir(mtd_path) if file.startswith(Package_Name) and file.endswith('.mtd')]
                         if not mtd_files: print(f"\n\n{C.lb}[{C.y} Warn ! {C.lb}] {C.rd} No {C.g}{Package_Name}..... .mtd {C.g}file found in {C.y}{mtd_path}\n")
                         else:
-                            UnMerge()
+                            if not M_Skip: UnMerge()
                             mtd_file = max(mtd_files, key=lambda file: C.os.path.getmtime(C.os.path.join(mtd_path, file)))
                             print(f"\n{C.lb}[{C.y} INFO ! {C.lb}] {C.c}Founded {C.g}➸❥ {mtd_file} ✔\n\n{C_Line}\n")
                             break
@@ -247,7 +247,7 @@ def RK_Techno_IND():
                     fix_time = C.time.time()
                     Smali_Patcher(smali_folders, L_S_F)
                     Replace_Strings(L_S_F, C.os.path.join(mtd_path, mtd_file))
-                    Merge_Smali_Folders(decompile_dir, isAPKTool, L_S_F)
+                    if not M_Skip: Merge_Smali_Folders(decompile_dir, isAPKTool, L_S_F)
                     App_Name = Scan_Application(apk_path, manifest_path, d_manifest_path, isAPKTool)
                     print(OR_App)
                     Replace_Application(manifest_path, d_manifest_path, Super_Value, App_Name, isAPKTool, Fix_Dex)
