@@ -31,7 +31,7 @@ def Extract_Smali(decompile_dir, smali_folders, isAPKTool):
 
     Extract_Dir = C.os.path.join(decompile_dir, *(['smali_classes'] if isAPKTool else ['smali', 'classes']))
 
-    Smali_Files, Folder_Suffix =  [], 2
+    matching_files, Smali_Files, Folder_Suffix = [], [], 2
 
     while C.os.path.exists(f"{Extract_Dir}{Folder_Suffix}"):
         Folder_Suffix += 1
@@ -53,7 +53,7 @@ def Extract_Smali(decompile_dir, smali_folders, isAPKTool):
 
     except Exception:
         # ---------------- Single Threading ----------------
-        matching_files, Count = [], [0]
+        Count = [0]
         for Smali_Path in Smali_Files:
             result = Regex_Scan(Smali_Path, Count, None)
             if result:

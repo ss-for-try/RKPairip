@@ -17,7 +17,7 @@ class CustomArgumentParser(C.argparse.ArgumentParser):
 
 # ---------------- Parse Arguments ----------------
 def parse_arguments():
-    parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v3.8') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v3.9')
+    parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v4.0') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v4.0')
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-i', dest='input', help=f'{C.y}➸ {C.g}Input APK Path...{C.c}')
     group.add_argument('-m', dest='Merge', help=f'{C.y}➸ {C.g}Anti-Split ( Only Merge Apk ){C.c}')
@@ -27,7 +27,7 @@ def parse_arguments():
     additional.add_argument('-a', '--ApkTool', action='store_true', help=f'{C.y}➸ {C.g}ApkTool ( Fast, But Not Stable Comparison To APKEditor ){C.c}')
     additional.add_argument('-s', '--MergeSkip', action='store_true', help=f'{C.y}➸ {C.g}Do U Want Last Dex Add Seprate ( For Dex Redivision & The script will be in listen mode, so you can do Max Value Dex Redivision {C.pr}( like 65536 ) {C.g}using MT/ApkTool_M and correct the name of the APK again and then press enter in the script, which will bypass CRC ){C.c}')
     additional.add_argument('-r', '--Repair_Dex', action='store_true', help=f'{C.y}➸ {C.g}Pairip Dex Fix ( Try After Translate String to MT ){C.c}')
-    additional.add_argument('-x', '--Hook_CoreX', action='store_true', help=f'{C.y}➸{C.g} Hook CoreX ( For Unity / Flutter & Crashed Apk Apk ){C.r}')
+    additional.add_argument('-x', '--Hook_CoreX', action='store_true', help=f'{C.y}➸{C.g} Hook CoreX ( For Unity / Flutter & Crashed Apk ){C.r}')
         
     args = C.sys.argv[1:]
     Ext = ('.apk', '.apks', '.apkm', '.xapk')

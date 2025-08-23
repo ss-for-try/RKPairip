@@ -91,7 +91,7 @@ def Regex_Scan(Smali_Path, Target_Regex, Count, Lock):
                 
 # ---------------- Smali Patcher ----------------
 def Smali_Patcher(smali_folders, L_S_F):
-    Smali_Paths = []
+    matching_files, Smali_Paths = [], []
     patterns = [
         (r'(\.method public static )FuckUByRK\(\)V([\s\S]*?.end method)[\w\W]*', r'\1constructor <clinit>()V\2', "Patch 1"),
         (r'sget-object v0, L[^;]+;->[^:]*:Ljava/lang/String;\s+const-string v1, ("(\d+.java:\d+)")\s+.line \d+\s+.local v0, "(\d+.java:\d+)":V\s+invoke-static \{v0\}, LRK_TECHNO_INDIA/ObjectLogger;->logstring\(Ljava/lang/Object;\)V', r'const-string v0, \1', "Patch 2"),
@@ -118,7 +118,7 @@ def Smali_Patcher(smali_folders, L_S_F):
 
     except Exception:
         # ---------------- Single Threading ----------------
-        matching_files, Count = [], [0]
+        Count = [0]
         for Smali_Path in Smali_Paths:
             result = Regex_Scan(Smali_Path, Target_Regex, Count, None)
             if result:

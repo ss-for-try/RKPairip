@@ -23,12 +23,13 @@ def Anti_Split(apk_path, isMerge, CoreX_Hook):
             if isMerge: exit()
             return output_path
         except C.subprocess.CalledProcessError as e:
-            exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} Anti-Split Failed ! ✘\n\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} Error Output: {e.stderr}\n")
+            exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} Anti-Split Failed ! ✘\n")
 
     if isMerge and Ext not in Merge_Ext:
         exit(f"\n{C.lb}[{C.c} Info {C.lb}] {C.rd}Split ✘\n\n\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Only Supported Extensions {C.g}{Merge_Ext}\n")
     return apk_path
 
+# ---------------- Check Split ---------------
 def Check_Split(apk_path, isCoreX):
     if isCoreX and C.os.path.splitext(apk_path)[-1].lower() not in Merge_Ext:
         print(f"\n\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Only Supported Extensions {C.g}{Merge_Ext} with {C.rkj}CoreX")

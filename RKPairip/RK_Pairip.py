@@ -17,6 +17,7 @@ def Clear(): C.os.system('cls' if C.os.name == 'nt' else 'clear')
 
 Clear()
 
+# ---------------- Install Require Module ---------------
 required_modules = ['requests', 'multiprocess']
 for module in required_modules:
     try:
@@ -33,7 +34,7 @@ for module in required_modules:
 # ---------------- Check Dependencies ----------------
 def check_dependencies():
     try:
-        C.subprocess.run(['java', '--version'], check=True, text=True, capture_output=True)
+        C.subprocess.run(['java', '-version'], check=True, text=True, capture_output=True)
     except (C.subprocess.CalledProcessError, FileNotFoundError):
         if C.os.name == 'posix':
             install_package('openjdk-17')
@@ -99,7 +100,7 @@ def RK_Techno_IND():
     CoreX_Hook=args.Hook_CoreX; isCoreX=False
     Credit=args.Credits_Instruction; instruction(Credit)
     isAPKTool=args.ApkTool; Fix_Dex=args.Repair_Dex
-    if isAPKTool or Fix_Dex: F.F_D_A(isAPKTool, Fix_Dex)
+    if isAPKTool or Fix_Dex: F.F_D_A()
     
     apk_path = args.input or args.Merge
 
@@ -107,7 +108,7 @@ def RK_Techno_IND():
 
     apk_path = Anti_Split(apk_path, args.Merge, CoreX_Hook)
 
-    # Set Directory
+    # ---------------- Set All Paths Directory ----------------
     decompile_dir = C.os.path.join(C.os.path.expanduser("~"), f"{C.os.path.splitext(C.os.path.basename(apk_path))[0]}_decompiled")
     build_dir = C.os.path.abspath(C.os.path.join(C.os.path.dirname(apk_path), f"{C.os.path.splitext(C.os.path.basename(apk_path))[0]}_Pairip.apk"))
     rebuild_dir = build_dir.replace('_Pairip.apk', '_Patched.apk')
@@ -119,17 +120,19 @@ def RK_Techno_IND():
     START = f'\n{C.lb}[{C.c}  Time Spent  {C.lb}] {C.g}︻デ═一 {C.y}'; END=f'{C.r} Seconds\n'
 
     if C.os.name == 'posix': (C.subprocess.run(['termux-wake-lock']), enable_wake_lock())
+
+    start_time = C.time.time()
+
+        # ---------------- Scan & Decompile APK ---------------
     Package_Name, License_Check = Scan_Apk(apk_path)
     if input: E_V_C(apk_path, Version())
-    start_time = C.time.time()
-    
     Decompile_Apk(apk_path, decompile_dir, isAPKTool, Fix_Dex)
 
-    # Last Smali Folder & All Smali Folder
+    # ---------------- Last Smali Folder & All Smali Folder ---------------
     L_S_F = L_S_C_F(decompile_dir, isAPKTool, Fix_Dex)
     smali_folders = Find_Smali_Folders(decompile_dir, isAPKTool, Fix_Dex)
 
-    # Fix Dex Flag: -r
+    # ---------------- Fix Dex Flag: -r ---------------
     if Fix_Dex:
         try:
             App_Name = Scan_Application(apk_path, manifest_path, d_manifest_path, Fix_Dex)
@@ -152,7 +155,7 @@ def RK_Techno_IND():
         except Exception as e:
             exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd}{e} ✘\n")
 
-    # Extract Target Smali & Logs Inject
+    # ---------------- Extract Target Smali & Logs Inject ---------------
     if not (CoreX_Hook or License_Check): Extract_Smali(decompile_dir, smali_folders, isAPKTool)
     L_S_F = L_S_C_F(decompile_dir, isAPKTool, Fix_Dex)
     if not (CoreX_Hook or License_Check):
@@ -161,18 +164,18 @@ def RK_Techno_IND():
         OR_App=f'\n{C.lb}[{C.c}  APPLICATION  {C.lb}] {C.g}︻デ═一 {Super_Value}  ✔\n'
         smali_folders = Find_Smali_Folders(decompile_dir, isAPKTool, Fix_Dex)
 
-    # Hook CoreX
+    # ---------------- Hook CoreX ---------------
     if CoreX_Hook and Check_CoreX(decompile_dir, isAPKTool): C.shutil.rmtree(decompile_dir); exit(0)
     Smali_Patch(smali_folders, CoreX_Hook, isCoreX)
     if CoreX_Hook or isCoreX: Hook_Core(args.input, decompile_dir, isAPKTool, Package_Name)
     if not isAPKTool: d_manifest_path = manifest_path
 
-    # Patch_Manifest AndroidManifest.xml
+    # ---------------- Patch Manifest ---------------
     Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isCoreX)
     if isAPKTool: Encode_Manifest(decompile_dir, manifest_path, d_manifest_path)
     
     if not (CoreX_Hook or License_Check): 
-        # Merge smali
+        # ---------------- Merge Smali ---------------
         if M_Skip:
             print(f"\n{C.lb}[ {C.y}INFO ! {C.lb}] {C.g} Skip Merge Last Dex {C.y}{C.os.path.basename(L_S_F)} {C.g} & Add Seprate (For Dex Redivision)\n")
             pass
@@ -181,6 +184,7 @@ def RK_Techno_IND():
 
         Translate_Smali = Translate_Smali_Name(C.os.path.basename(L_S_C_F(decompile_dir, isAPKTool, Fix_Dex)), isAPKTool) if L_S_C_F(decompile_dir, isAPKTool, Fix_Dex) else "No Smali classes folder found."
 
+    # ---------------- Recompile APK ---------------
     Recompile_Apk(decompile_dir, isAPKTool, build_dir)
     if CoreX_Hook or License_Check:
         CRC_Fix(M_Skip, apk_path, build_dir, ["AndroidManifest.xml", ".dex"])
@@ -188,7 +192,7 @@ def RK_Techno_IND():
         print(f"{C_Line}\n\n" + START + f'{C.time.time() - start_time:.2f}' + END + f'\n{Logo}')
         C.os.name == 'posix' and (C.subprocess.run(['termux-wake-unlock']), disable_wake_lock()); exit(0)
 
-    # CRCFix
+    # ---------------- CRCFix ---------------
     Final_Apk = CRC_Fix(M_Skip, apk_path, build_dir, ["AndroidManifest.xml", ".dex"])
     if isAPKTool: FixSigBlock(decompile_dir, apk_path, build_dir, rebuild_dir)
 
@@ -196,7 +200,7 @@ def RK_Techno_IND():
     elapsed_time = C.time.time() - start_time
     print(f"{C_Line}\n\n\n{C.lb}[{C.c}  Last Dex  {C.lb}] {C.g}︻デ═一 {C.pr}'{C.g}{C.os.path.basename(Translate_Smali)}{C.pr}' {C.y}( Translate with MT )  {C.g}✔\n")
 
-    # APPLICATION NAME
+    # ---------------- APPLICATION NAME ---------------
     print(OR_App)
     print(START + f'{elapsed_time:.2f}' + END + f"\n{C_Line}\n")
     if C.os.path.exists(mtd_path):
@@ -221,7 +225,7 @@ def RK_Techno_IND():
             Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isCoreX=True)
             Hook_Core(args.input, decompile_dir, isAPKTool, Package_Name)
             Recompile_Apk(decompile_dir, isAPKTool, build_dir)
-            # CRCFix
+            # ---------------- CRCFix ---------------
             CRC_Fix(M_Skip, apk_path, build_dir, ["AndroidManifest.xml", ".dex"])
             if isAPKTool: FixSigBlock(decompile_dir, apk_path, build_dir, rebuild_dir)
             continue
@@ -243,6 +247,7 @@ def RK_Techno_IND():
                     user_input = input(f"\n{C.lb}[{C.y} Input {C.lb}] {C.c}If You Want To Retry, Press Enter & Exit To Script {C.pr}'q' : {C.y}")
                     if user_input.lower() == 'q': break
 
+                # ---------------- Restore Strings ---------------
                 if mtd_files:
                     fix_time = C.time.time()
                     Smali_Patcher(smali_folders, L_S_F)
