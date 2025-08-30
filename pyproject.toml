@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "Pairip"
-version = "4.0"
+version = "4.1"
 authors = [
   { name = "RK_TECHNO_INDIA", email = "TechnoIndian786@gmail.com" }
 ]
