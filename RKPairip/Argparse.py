@@ -17,7 +17,7 @@ class CustomArgumentParser(C.argparse.ArgumentParser):
 
 # ---------------- Parse Arguments ----------------
 def parse_arguments():
-    parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v4.1') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v4.1')
+    parser = CustomArgumentParser(description=f'{C.c}RKPairip Script v4.2') if any(arg.startswith('-') for arg in C.sys.argv[1:]) else C.argparse.ArgumentParser(description=f'{C.c}RKPairip Script v4.2')
 
     group = parser.add_mutually_exclusive_group(required=True)
 
