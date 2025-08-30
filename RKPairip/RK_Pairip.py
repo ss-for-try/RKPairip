@@ -146,7 +146,7 @@ def RK_Techno_IND():
                 pass
 
             Smali_Patcher(smali_folders, L_S_F); build_dir = rebuild_dir
-            Recompile_Apk(decompile_dir, Fix_Dex, build_dir); C.shutil.rmtree(decompile_dir)
+            Recompile_Apk(decompile_dir, Fix_Dex, build_dir, isFlutter); C.shutil.rmtree(decompile_dir)
             elapsed_time = C.time.time() - start_time
             print(START + f'{elapsed_time:.2f}' + END)
             print(Logo)
@@ -171,7 +171,7 @@ def RK_Techno_IND():
     if not isAPKTool: d_manifest_path = manifest_path
 
     # ---------------- Patch Manifest ---------------
-    Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isCoreX)
+    Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isFlutter, isCoreX)
     if isAPKTool: Encode_Manifest(decompile_dir, manifest_path, d_manifest_path)
     
     if not (CoreX_Hook or License_Check): 
@@ -185,7 +185,7 @@ def RK_Techno_IND():
         Translate_Smali = Translate_Smali_Name(C.os.path.basename(L_S_C_F(decompile_dir, isAPKTool, Fix_Dex)), isAPKTool) if L_S_C_F(decompile_dir, isAPKTool, Fix_Dex) else "No Smali classes folder found."
 
     # ---------------- Recompile APK ---------------
-    Recompile_Apk(decompile_dir, isAPKTool, build_dir)
+    Recompile_Apk(decompile_dir, isAPKTool, build_dir, isFlutter)
     if CoreX_Hook or License_Check:
         CRC_Fix(M_Skip, apk_path, build_dir, ["AndroidManifest.xml", ".dex"])
         C.shutil.rmtree(decompile_dir)
@@ -222,9 +222,9 @@ def RK_Techno_IND():
             print(f"\n{C_Line}\n\n\n{C.lb}[{C.y} Info {C.lb}] {C.c}Hook lib_Pairip_CoreX.so & loadLibrary in VMRunner Class.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} This Hook Work in Some Apk Like Flutter/Unity & Try on Crash Apk.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} Note Some Time This Apk Working Directly with Sign When Directly Working Hook Then why need Bypass Pairip, because u can also modify dex in Apk.{C.g}\n    |\n    └──── {C.r}~{C.g}${C.y} Still U want Bypass Pairip then Dump '.mtd' & Press Enter ( for mtd dump Use  Multi_App cuz Storage Permission not added in Apk )\n\n{C_Line}\n")
             
             Smali_Patch(smali_folders, CoreX_Hook, isCoreX=True)
-            Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isCoreX=True)
+            Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isFlutter, isCoreX=True)
             Hook_Core(args.input, decompile_dir, isAPKTool, Package_Name)
-            Recompile_Apk(decompile_dir, isAPKTool, build_dir)
+            Recompile_Apk(decompile_dir, isAPKTool, build_dir, isFlutter)
             # ---------------- CRCFix ---------------
             CRC_Fix(M_Skip, apk_path, build_dir, ["AndroidManifest.xml", ".dex"])
             if isAPKTool: FixSigBlock(decompile_dir, apk_path, build_dir, rebuild_dir)
@@ -257,7 +257,7 @@ def RK_Techno_IND():
                     print(OR_App)
                     Replace_Application(manifest_path, d_manifest_path, Super_Value, App_Name, isAPKTool, Fix_Dex)
                     if isAPKTool: Encode_Manifest(decompile_dir, manifest_path, d_manifest_path)
-                    Recompile_Apk(decompile_dir, isAPKTool, build_dir)
+                    Recompile_Apk(decompile_dir, isAPKTool, build_dir, isFlutter)
                     C.shutil.rmtree(decompile_dir)
                     elapsed_time = C.time.time() - fix_time
                     print(START + f'{elapsed_time:.2f}' + END)

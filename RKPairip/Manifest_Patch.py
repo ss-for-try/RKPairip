@@ -49,7 +49,7 @@ def Fix_Manifest(d_manifest_path):
         open(d_manifest_path, 'w', encoding='utf-8', errors='ignore').write(new_content)
 
 # ---------------- Patch Manifest ----------------
-def Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isCoreX):
+def Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S_F, CoreX_Hook, isFlutter, isCoreX):
     if isAPKTool:
         Decode_Manifest(manifest_path, d_manifest_path)
     Fix_Manifest(d_manifest_path)
@@ -61,7 +61,7 @@ def Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S
 
         application_tag = C.re.search(r'<application\s+[^>]*>', content)[0]
         
-        if isCoreX:
+        if isCoreX or isFlutter:
             cleaned_tag = C.re.sub(r'\s+android:extractNativeLibs="[^"]*?"', '', application_tag)
             content = content.replace(application_tag, C.re.sub(r'>', '\n\tandroid:extractNativeLibs="true">', cleaned_tag))
         else:
@@ -79,7 +79,9 @@ def Patch_Manifest(decompile_dir, manifest_path, d_manifest_path, isAPKTool, L_S
         open(d_manifest_path, 'w', encoding='utf-8', errors='ignore').write(content)
         
         print(f"\n{C.lb}[ {C.c}Storage Permission {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}AndroidManifest.xml{C.pr}' {C.g}✔\n")
-    if isCoreX and isAPKTool: Encode_Manifest(decompile_dir, manifest_path, d_manifest_path)
+
+    if (isCoreX or isFlutter) and isAPKTool:
+        Encode_Manifest(decompile_dir, manifest_path, d_manifest_path)
 
 # ---------------- Replace Application ----------------
 def Replace_Application(manifest_path, d_manifest_path, Super_Value, App_Name, isAPKTool, Fix_Dex):

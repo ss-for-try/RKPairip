@@ -27,7 +27,7 @@ def Decompile_Apk(apk_path, decompile_dir, isAPKTool, Fix_Dex):
         exit(f"\n{C.lb}[ {C.rd}Error ! {C.lb}] {C.rd} Decompile APK Failed with {AA} ✘\n")
 
 # ---------------- Recompile APK ----------------
-def Recompile_Apk(decompile_dir, isAPKTool, build_dir):
+def Recompile_Apk(decompile_dir, isAPKTool, build_dir, isFlutter):
 
     AA = f"{'APKTool' if isAPKTool else 'APKEditor'}"
     print(f"{C_Line}\n\n\n{C.lb}[ {C.pr}* {C.lb}] {C.c} Recompile APK with {AA}...")
@@ -39,8 +39,10 @@ def Recompile_Apk(decompile_dir, isAPKTool, build_dir):
 
     else:
         cmd = ["java", "-jar", F.APKEditor_Path, "b", "-i", decompile_dir, "-o", build_dir, "-f"]
+        
+        if isFlutter: cmd += ["-extractNativeLibs", "true"]
 
-        print(f"{C.g}  |\n  └──── {C.r}Recompiling ~{C.g}$ java -jar {C.os.path.basename(F.APKEditor_Path)} b -i {C.os.path.basename(decompile_dir)} -o {C.os.path.basename(build_dir)} -f\n\n{C_Line}{C.g}\n")
+        print(f"{C.g}  |\n  └──── {C.r}Recompiling ~{C.g}$ java -jar {C.os.path.basename(F.APKEditor_Path)} b -i {C.os.path.basename(decompile_dir)} -o {C.os.path.basename(build_dir)} -f" + (" -extractNativeLibs true" if isFlutter else "") + f"\n\n{C_Line}{C.g}\n")
 
     try:
         C.subprocess.run(cmd, check=True)
@@ -61,4 +63,3 @@ def FixSigBlock(decompile_dir, apk_path, build_dir, rebuild_dir):
             cmd.extend(["-o", build_dir])
         C.subprocess.run(cmd, check=True, text=True, capture_output=True)
     C.shutil.rmtree(sig_dir); C.os.remove(rebuild_dir)
-
