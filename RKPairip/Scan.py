@@ -42,37 +42,36 @@ def Scan_Apk(apk_path):
     if not any([App_Name, isPairip, License_Check]): exit(f"{C.rd} Your APK Has No Pairip Protection ✘\n")
 
     # ---------------- Check Flutter / Unity Protection ----------------
-    def Check_Lib():
-        isUnity, isFlutter, dex_files = [], [], []
+    isUnity = isFlutter = False; isDex = []
 
-        with C.zipfile.ZipFile(apk_path, 'r') as zip_ref:
-            for item in zip_ref.infolist():
-                if item.filename.startswith('lib/'):
-                    if item.filename.endswith('libunity.so'):
-                        isUnity.append(item.filename)
-                    if item.filename.endswith('libflutter.so'):
-                        isFlutter.append(item.filename)
-                elif item.filename.startswith("classes") and item.filename.endswith('.dex'):
-                    dex_files.append(item.filename)
+    with C.zipfile.ZipFile(apk_path, 'r') as zip_ref:
+        for item in zip_ref.infolist():
+            if item.filename.startswith('lib/'):
+                if item.filename.endswith('libunity.so'):
+                    isUnity = True
+                if item.filename.endswith('libflutter.so'):
+                    isFlutter = True
 
-            Methods = Fields = 0
+            elif item.filename.startswith("classes") and item.filename.endswith('.dex'):
+                isDex.append(item.filename)
 
-            if dex_files:
-                try:
-                    data = zip_ref.open(dex_files[-1], 'r').read()
-                    Methods = int.from_bytes(data[88:91], "little")
-                    Fields = int.from_bytes(data[80:83], "little")
-                except (OSError, ValueError, KeyError, C.zipfile.BadZipFile) as e:
-                    print(f"\n\n{C.lb}[ {C.y}WARN ! {C.lb}] {C.rd}{e}, Skipping Methods & Fields Count.")
+        Methods = Fields = 0
 
-        if isUnity:
-            print(f"\n\n{C.lb}[ {C.c}Unity Protection {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}libunity.so{C.pr}' {C.g} ✔\n\n{C.lb}[ {C.y}WARN ! {C.lb}] {C.rd}This is a Unity app. Completely removing Pairip may not be possible unless you can bypass the libpairipcore.so check from Unity libraries.")
-        if isFlutter:
-            print(f"\n\n{C.lb}[ {C.c}Flutter Protection {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}libflutter.so{C.pr}' {C.g} ✔\n\n\n{C.lb}[ {C.y}WARN ! {C.lb}] {C.rd}This is a Flutter app. It may not run directly after removing pairip, unless you can bypass the libpairipcore.so check from Flutter libraries.")
-        if Methods and Fields:
-            print(f"\n\n{C.lb}[{C.y} Last Dex Total {C.lb}] {C.c}Methods: {C.rkj}{Methods} {C.g}➸❥ {C.c}Field: {C.rkj}{Fields}  {C.g}✔")
-        else:
-            pass
+        if isDex:
+            try:
+                data = zip_ref.open(isDex[-1], 'r').read()
+                Methods = int.from_bytes(data[88:91], "little")
+                Fields = int.from_bytes(data[80:83], "little")
+            except (OSError, ValueError, KeyError, C.zipfile.BadZipFile) as e:
+                print(f"\n\n{C.lb}[ {C.y}WARN ! {C.lb}] {C.rd}{e}, Skipping Methods & Fields Count.")
 
-    Check_Lib()
-    return Package_Name, License_Check
+    if isUnity:
+        print(f"\n\n{C.lb}[ {C.c}Unity Protection {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}libunity.so{C.pr}' {C.g} ✔\n\n{C.lb}[ {C.y}WARN ! {C.lb}] {C.cb}This is {C.g}Unity + Pairip {C.cb}APK. Completely removing Pairip may not be possible unless you can bypass the libpairipcore.so check from Unity libraries.")
+    if isFlutter:
+        print(f"\n\n{C.lb}[ {C.c}Flutter Protection {C.lb}] {C.rkj}➸❥ {C.pr}'{C.g}libflutter.so{C.pr}' {C.g} ✔")
+    if Methods and Fields:
+        print(f"\n\n{C.lb}[{C.y} Last Dex Total {C.lb}] {C.c}Methods: {C.rkj}{Methods} {C.g}➸❥ {C.c}Field: {C.rkj}{Fields}  {C.g}✔")
+    else:
+        pass
+
+    return Package_Name, License_Check, isFlutter

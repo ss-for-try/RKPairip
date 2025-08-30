@@ -1,7 +1,7 @@
 from .CRC import CRC_Fix
 from .Scan import Scan_Apk
 from .C_M import CM;  C = CM()
-from .Flutter_SO import Version, E_V_C
+from .Flutter_SO import Flutter_SO
 from .Argparse import parse_arguments
 from .Instruction_Credit import instruction
 from .Anti_Splits import Anti_Split, Check_Split
@@ -123,9 +123,9 @@ def RK_Techno_IND():
 
     start_time = C.time.time()
 
-        # ---------------- Scan & Decompile APK ---------------
-    Package_Name, License_Check = Scan_Apk(apk_path)
-    if input: E_V_C(apk_path, Version())
+    # ---------------- Scan & Decompile APK ---------------
+    Package_Name, License_Check, isFlutter = Scan_Apk(apk_path)
+    if input and isFlutter: Flutter_SO(apk_path, isFlutter)
     Decompile_Apk(apk_path, decompile_dir, isAPKTool, Fix_Dex)
 
     # ---------------- Last Smali Folder & All Smali Folder ---------------
